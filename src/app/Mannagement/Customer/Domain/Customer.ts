@@ -1,47 +1,37 @@
 import { AggregateRoot } from '@nestjs/cqrs'
 import { CustomerCreatedEvent } from 'src/API/Mannagement/Customer/Events/CustomerCreatedEvent';
+import { Uuid } from 'src/app/Shared/Domain/ValueObjects/Uuid';
 
 export class Customer extends AggregateRoot {
 
-    createdAt: Date;
-    creationFailure: {error: Error, message: string};
+    creationFailure: { error: Error, message: string };
 
     deletedAt: Date;
 
     constructor(
-        private readonly id: string,
-        private readonly name: string,
-        private readonly contact: string, 
+        readonly id: Uuid,
+        readonly name: string,
+        readonly contact: string,
+        readonly createdAt: Date
     ) {
         super();
     }
 
-    getId(){
-        return this.id;
-    }
+    public toPrimitives() {
 
-    getName(){
-        return this.name;
-    }
-
-    getContact(){
-        return this.contact
-    }
-
-    public toPrimitives(){
         return {
-            id: this.id,
+            id: this.id.toString(),
             name: this.name,
             contact: this.contact
-        }   
+        }
     }
 
 
-    public create(customer: Customer){
-        this.apply(new CustomerCreatedEvent(customer));
+    public create() {
+        this.apply(new CustomerCreatedEvent(this));
     }
 
-    public delete(): void{
+    public delete(): void {
         this.deletedAt = new Date();
     }
 
