@@ -3,7 +3,6 @@ import { Module, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { CqrsModule, CommandBus, EventBus } from '@nestjs/cqrs'
 
-
 //Controllers
 import { CustomerControllers } from './Controllers/';
 
@@ -16,12 +15,18 @@ import { CustomerCreateCommandHanlder } from './Commands/Handlers/CustomerCreate
 //event handler
 import { CustomerCreatedEventHanlder } from './Events/Handlers/CustomerCreatedEventHanlder';
 
+import { ConfigModule } from '@nestjs/config'
+
 //customer addapters
 import { CustomerCreator } from 'src/app/Mannagement/Customer/Application/Create/CustomerCreator';
+import { DatabaseModule } from 'src/Databases/Database.module';
+import { CustomerEventMongoRepository } from 'src/app/Mannagement/Customer/Infraestructure/EventStore/Mongoose/CustomerEventMongoRepository';
 
 @Module({
     imports: [
-        CqrsModule
+        DatabaseModule,
+        CqrsModule,
+        ConfigModule
     ],
     controllers: [
         ...CustomerControllers
@@ -30,6 +35,10 @@ import { CustomerCreator } from 'src/app/Mannagement/Customer/Application/Create
         {
             provide: 'CustomerCommandRepository',
             useClass: TypeOrmCustomerCommandRepository
+        },
+        {
+            provide: 'CustomerEventRepository',
+            useClass: CustomerEventMongoRepository
         },
         {
             provide: 'CustomerCreator',

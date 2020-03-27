@@ -1,4 +1,4 @@
-import { AppConfig } from "../../Shared/app.config";
+import { AppConfig } from "../../../Shared/app.config";
 
 import { WebController } from 'src/API/Mannagement/Shared/infraestructure/nest/WebController'
 
@@ -6,8 +6,8 @@ import { validate, ValidationError } from 'class-validator'
 
 import { CommandBus } from '@nestjs/cqrs'
 import { Controller, Post, Body, Res } from "@nestjs/common";
-import { CustomerCreateCommand } from "../Commands/CustomerCreateCommand";
-import { CustomerDTO } from "../CustomerDTO";
+import { CustomerCreateCommand } from "../../Commands/CustomerCreateCommand";
+import { CustomerDTO } from "../../CustomerDTO";
 @Controller(`${AppConfig.MainRoute}/customer`)
 export class CustomerCommandController extends WebController {
 
@@ -31,12 +31,17 @@ export class CustomerCommandController extends WebController {
         return await validate(new CustomerDTO(request))
     }
 
-    private createCustomer(@Body() request, @Res() response){
+    private async createCustomer(@Body() request, @Res() response){
         
-        this.commandBus.execute(new CustomerCreateCommand(request.id, request.name, request.contact) );
-
-        return this.redirectWithMessage('/customers', response, 'creation request is on the way, please wait for confirmation notification')
-    
+        await this.commandBus.execute(new CustomerCreateCommand(request.id, request.name, request.contact) )
+        .then(() => {
+            this.redirectWithMessage('/customers', response, 'creado con exito')
+        })
+        .catch( error => {
+            console.log(error); 
+            this.redirectWithMessage('/customer', response, `error creating customer`);
+        })
+         
     }
 
 

@@ -3,6 +3,7 @@ import { CommandHandler, ICommandHandler, EventPublisher } from '@nestjs/cqrs'
 import { CustomerCreateCommand } from '../CustomerCreateCommand';
 import { Inject } from '@nestjs/common';
 import { CustomerCreator } from 'src/app/Mannagement/Customer/Application/Create/CustomerCreator';
+import { CreationFailedException } from 'src/app/Shared/Domain/Exception/CreationFailedException';
 
 @CommandHandler(CustomerCreateCommand)
 export class CustomerCreateCommandHanlder implements ICommandHandler<CustomerCreateCommand> {
@@ -12,14 +13,19 @@ export class CustomerCreateCommandHanlder implements ICommandHandler<CustomerCre
         private readonly publisher: EventPublisher
     ) { }
 
-    async execute(command: CustomerCreateCommand){
-
-        const customerCreator = this.publisher.mergeObjectContext(
+    execute(command: CustomerCreateCommand) {
+        return new Promise(async (resolve, reject) => {
             await this.creator.__invoke(command.name, command.contact)
-        );
+            .then(result => {
+                resolve();
+                const customerCreator = this.publisher.mergeObjectContext(result)
+                
+                customerCreator.create();
+                customerCreator.commit();
+            })
+            .catch(error => {reject(new CreationFailedException(error, 'CustomerCommandHandler')) })
+        })
 
-        customerCreator.create();
-        customerCreator.commit();
     }
 
 }

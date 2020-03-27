@@ -1,34 +1,34 @@
-import { CustomerCommandRepository } from "../../Domain/repository/CustomerCommandRepository";
+import { CustomerCommandRepository } from "../../Domain/Repository/Command/CustomerCommandRepository";
 import { Customer } from "../../Domain/Customer";
 import { Inject, Injectable } from "@nestjs/common";
-import { CustomerCreateCommand } from "src/API/Mannagement/Customer/Commands/CustomerCreateCommand";
 import { GeneratedUuid } from "src/app/Shared/Domain/GeneratedUuid";
+import { TypeOrmCustomerEntity } from "../../Infraestructure/Persistence/TypeORM/Entity/TypeOrmCustomer.entity";
+import { Uuid } from "src/app/Shared/Domain/ValueObjects/Uuid";
 
 @Injectable()
 export class CustomerCreator {
 
-    constructor(
-        @Inject('CustomerCommandRepository') private repository: CustomerCommandRepository
-    ) { }
+  constructor(
+    @Inject('CustomerCommandRepository') private repository: CustomerCommandRepository
+  ) { }
 
-    __invoke(name: string, contact: string){
-
-    return this.create(name, contact)
-    .then(
-      result => {
-        return new Customer(result.id, result.name, result.contact, new Date());
-      }
-    )
-    .catch(error => error)
+  __invoke(name: string, contact: string): Promise<Customer> {
+    
+    return new Promise(async (resolve, reject) => {
+      await this.create(name, contact)
+        .then(result => {
+          resolve(new Customer(new Uuid(result.id), result.name, result.contact, result.createdAt));
+        })
+        .catch(error => reject(error))
+    })
 
   }
 
+  private async create(name: string, contact: string): Promise<TypeOrmCustomerEntity> {
+    const customer = new Customer( new Uuid(new GeneratedUuid().__invoke()), name, contact, new Date());
+    
+    return await this.repository.save(customer);
 
-    private async create(name, contact){
-
-      const customer = new Customer( new GeneratedUuid().__invoke(), name, contact, new Date())
-      return await this.repository.save(customer);
-
-    }
+  }
 
 }

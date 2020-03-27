@@ -1,24 +1,25 @@
-import { IsUUID, validate } from "class-validator";
-import { DoesNotUuidException } from "../DoesNotUuidException";
+import { IsUUID, validate, ValidationError } from "class-validator";
+import { DoesNotUuidException } from "../Exception/DoesNotUuidException";
 
 export class Uuid {
 
-    private readonly value: string;
-
     @IsUUID("4")
-    private middleValidationPoint: string;
-
+    private value: string;
+    
     constructor(value: string){
 
-        this.middleValidationPoint = value;
-
-        this.ensureIsValidUuid()
-
         this.value = value;
+
+        this.ensureIsValidUuid().then(validationErrors => {
+            if(validationErrors.length){
+                validationErrors.map(error => {throw new DoesNotUuidException(error)})
+            }
+        }).catch(error => {console.log(error)})
+
     }
 
-    private ensureIsValidUuid(){
-        if(validate(this.middleValidationPoint)) throw new DoesNotUuidException();
+    private async  ensureIsValidUuid(): Promise<ValidationError[]>{
+        return await validate(this);
     }
 
     public equals(otherUuid: string){

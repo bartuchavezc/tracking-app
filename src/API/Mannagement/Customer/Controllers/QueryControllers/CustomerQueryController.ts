@@ -1,5 +1,6 @@
+import { AppConfig } from "../../../Shared/app.config";
+
 import { Controller, Get } from "@nestjs/common";
-import { AppConfig } from "../../Shared/app.config";
 
 @Controller(`${AppConfig.MainRoute}/customer`)
 export class CustomerQueryController {

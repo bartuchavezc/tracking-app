@@ -18,7 +18,6 @@ export class Customer extends AggregateRoot {
     }
 
     public toPrimitives() {
-
         return {
             id: this.id.toString(),
             name: this.name,
