@@ -2,8 +2,8 @@ import { CommandHandler, ICommandHandler, EventPublisher } from '@nestjs/cqrs'
 
 import { CustomerCreateCommand } from '../CustomerCreateCommand';
 import { Inject } from '@nestjs/common';
-import { CustomerCreator } from 'src/app/Mannagement/Customer/Application/Create/CustomerCreator';
-import { CreationFailedException } from 'src/app/Shared/Domain/Exception/CreationFailedException';
+import { CustomerCreator } from 'src/APP/Mannagement/Customer/Application/Create/CustomerCreator';
+import { CreationFailedException } from 'src/APP/Shared/Domain/Exception/CreationFailedException';
 
 @CommandHandler(CustomerCreateCommand)
 export class CustomerCreateCommandHanlder implements ICommandHandler<CustomerCreateCommand> {

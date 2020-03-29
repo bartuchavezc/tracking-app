@@ -1,9 +1,9 @@
 import { CustomerCommandRepository } from "../../Domain/Repository/Command/CustomerCommandRepository";
 import { Customer } from "../../Domain/Customer";
 import { Inject, Injectable } from "@nestjs/common";
-import { GeneratedUuid } from "src/app/Shared/Domain/GeneratedUuid";
+import { GeneratedUuid } from "src/APP/Shared/Domain/GeneratedUuid";
 import { TypeOrmCustomerEntity } from "../../Infraestructure/Persistence/TypeORM/Entity/TypeOrmCustomer.entity";
-import { Uuid } from "src/app/Shared/Domain/ValueObjects/Uuid";
+import { Uuid } from "src/APP/Shared/Domain/ValueObjects/Uuid";
 
 @Injectable()
 export class CustomerCreator {

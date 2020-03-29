@@ -3,7 +3,6 @@ import { ValidationError } from 'class-validator'
 import { Res } from '@nestjs/common';
 export class WebController {
 
-
   protected responseWithValidationErrors(route: string, errors: ValidationError[], @Res() response) {
   
     errors = this.formatErrors(errors);

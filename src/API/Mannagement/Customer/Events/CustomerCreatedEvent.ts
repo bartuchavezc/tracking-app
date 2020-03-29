@@ -1,5 +1,5 @@
 import { IEvent } from '@nestjs/cqrs'
-import { Customer } from 'src/app/Mannagement/Customer/Domain/Customer'
+import { Customer } from 'src/APP/Mannagement/Customer/Domain/Customer'
 
 export class CustomerCreatedEvent implements IEvent {
 

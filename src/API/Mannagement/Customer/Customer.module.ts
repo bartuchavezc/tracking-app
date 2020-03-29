@@ -7,7 +7,7 @@ import { CqrsModule, CommandBus, EventBus } from '@nestjs/cqrs'
 import { CustomerControllers } from './Controllers/';
 
 //repository
-import { TypeOrmCustomerCommandRepository } from 'src/app/Mannagement/Customer/Infraestructure/Persistence/TypeORM/TypeOrmCustomerCommandRepository';
+import { TypeOrmCustomerCommandRepository } from 'src/APP/Mannagement/Customer/Infraestructure/Persistence/TypeORM/TypeOrmCustomerCommandRepository';
 
 //comand handler
 import { CustomerCreateCommandHanlder } from './Commands/Handlers/CustomerCreateCommandHandler';
@@ -18,9 +18,9 @@ import { CustomerCreatedEventHanlder } from './Events/Handlers/CustomerCreatedEv
 import { ConfigModule } from '@nestjs/config'
 
 //customer addapters
-import { CustomerCreator } from 'src/app/Mannagement/Customer/Application/Create/CustomerCreator';
+import { CustomerCreator } from 'src/APP/Mannagement/Customer/Application/Create/CustomerCreator';
 import { DatabaseModule } from 'src/Databases/Database.module';
-import { CustomerEventMongoRepository } from 'src/app/Mannagement/Customer/Infraestructure/EventStore/Mongoose/CustomerEventMongoRepository';
+import { CustomerEventMongoRepository } from 'src/APP/Mannagement/Customer/Infraestructure/EventStore/Mongoose/CustomerEventMongoRepository';
 
 @Module({
     imports: [

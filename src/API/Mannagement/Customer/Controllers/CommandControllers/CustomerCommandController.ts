@@ -1,8 +1,8 @@
 import { AppConfig } from "../../../Shared/app.config";
 
-import { WebController } from 'src/API/Mannagement/Shared/infraestructure/nest/WebController'
-
 import { validate, ValidationError } from 'class-validator'
+
+import { WebController } from "src/API/Mannagement/Shared/application/nest/WebController";
 
 import { CommandBus } from '@nestjs/cqrs'
 import { Controller, Post, Body, Res } from "@nestjs/common";
