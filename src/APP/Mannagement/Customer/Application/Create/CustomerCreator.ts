@@ -17,21 +17,23 @@ export class CustomerCreator {
 
     return new Promise(async (resolve, reject) => {
 
+
+      const event = 'CustomerCreatedEvent';
+
       const id = new Uuid(new GeneratedUuid().__invoke());
 
-      const status = 'usable'
+      const status = 'created' // created | updated | deleted
       const payload = {
         customerName: name,
         customerContact: contact
       }
 
       const meta = {
-        title: 'customerCreatedEvent',
         createdAt: new Date()
       }
 
       await this.storeRepository
-        .add({ id: id.toString(), status, payload, meta })
+        .add({ event, id: id.toString(), status, payload, meta })
         .then((result) => {
           let customer = mapped(result);
           resolve(new Customer(new Uuid(customer.id), customer.name, customer.contact, customer.createdAt));

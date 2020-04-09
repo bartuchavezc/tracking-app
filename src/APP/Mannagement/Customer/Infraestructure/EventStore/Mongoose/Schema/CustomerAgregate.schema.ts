@@ -3,6 +3,7 @@ import * as mongoose from 'mongoose'
 const Schema = mongoose.Schema;
 
 export const CustomerSchema = new Schema({
+    event: String,
     aggregateId: String,
     status: String,
     payload: {
@@ -10,10 +11,9 @@ export const CustomerSchema = new Schema({
         customerContact: String,
     },
     meta: {
-        title: String,
         author: String,
-        createdAt: { type: Date, default: Date.now },
+        createdAt: { type: Date, default: new Date() },
         updatedAt: Date,
         deletedAt: Date
     }
-})
+});

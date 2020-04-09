@@ -2,6 +2,8 @@ import { Document } from 'mongoose'
 
 export interface MongoCustomer extends Document{
 
+
+    readonly event: string,
     readonly aggregateId: string,
     readonly status: string,
     readonly payload: {
@@ -9,7 +11,6 @@ export interface MongoCustomer extends Document{
         customerContact: string
     },
     readonly meta: {
-        title: string,
         author: string,
         createdAt: Date,
         updatedAt: Date,
