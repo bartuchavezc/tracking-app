@@ -18,10 +18,10 @@ export class CustomerCreateCommandHanlder implements ICommandHandler<CustomerCre
             await this.creator.__invoke(command.name, command.contact)
             .then(result => {
                 resolve();
-                const customerCreator = this.publisher.mergeObjectContext(result)
+                const createdCustomer = this.publisher.mergeObjectContext(result)
                 
-                customerCreator.create();
-                customerCreator.commit();
+                createdCustomer.creationSuccess(createdCustomer);
+                createdCustomer.commit();
             })
             .catch(error => {reject(new CreationFailedException(error, 'CustomerCommandHandler')) })
         })

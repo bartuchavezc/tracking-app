@@ -9,7 +9,7 @@ import { Uuid } from "src/APP/Shared/Domain/ValueObjects/Uuid";
 export class CustomerCreator {
 
   constructor(
-    @Inject('CustomerCommandRepository') private repository: CustomerCommandRepository
+    @Inject('CustomerCommandRepository') private repository:
   ) { }
 
   __invoke(name: string, contact: string): Promise<Customer> {
@@ -25,9 +25,24 @@ export class CustomerCreator {
   }
 
   private async create(name: string, contact: string): Promise<TypeOrmCustomerEntity> {
-    const customer = new Customer( new Uuid(new GeneratedUuid().__invoke()), name, contact, new Date());
-    
-    return await this.repository.save(customer);
+    //const customer = new Customer( new Uuid(new GeneratedUuid().__invoke()), name, contact, new Date());
+    //return await this.repository.save(customer);
+
+    const id = new Uuid(new GeneratedUuid().__invoke())
+    const createdAt = new Date();     
+    const status = 'usable'
+    const payload = {
+        customerName: name,
+        customerContact: contact
+    }
+
+    const meta = {
+        title: 'Nuevo customer creado',
+        createdAt
+    }
+
+    await this.repository.create({id, status, payload, meta })
+
 
   }
 

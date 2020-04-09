@@ -8,30 +8,18 @@ import { CustomerEventRepository } from 'src/APP/Mannagement/Customer/Domain/Rep
 export class CustomerCreatedEventHanlder implements IEventHandler<CustomerCreatedEvent> {
 
     constructor(
-        @Inject('CustomerEventRepository') private repository: CustomerEventRepository
+        //@Inject('CustomerEventRepository') private repository: CustomerEventRepository
     ){}
 
     async handle(
         event: CustomerCreatedEvent
     ) {
-        console.log(event.customer);
+        console.log(event, 'on event handler');
 
         const {id, name, contact} = event.customer.toPrimitives()
-        const {createdAt } = event.customer 
-        
-        const status = 'usable'
 
-        const payload = {
-            customerName: name,
-            customerContact: contact
-        }
+        console.log(`customer: ${id}, ${name}, ${contact}`);
 
-        const meta = {
-            title: 'Nuevo customer creado',
-            createdAt
-        }
-
-        await this.repository.create({id, status, payload, meta })
     }
 
 }
