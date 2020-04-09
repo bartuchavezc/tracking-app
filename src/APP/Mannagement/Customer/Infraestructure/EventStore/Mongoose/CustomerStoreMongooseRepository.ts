@@ -6,7 +6,7 @@ import { DbQueryConnection } from 'src/Databases/QuerysDB/DbQueryConnection';
 import { CustomerSchema } from './Schema/CustomerAgregate.schema';
 
 @Injectable()
-export class CustomerEventMongoRepository {
+export class CustomerStoreMongooseRepository {
 
     private model: Model<MongoCustomer>;
     private connection: Promise<Connection>;
@@ -17,15 +17,15 @@ export class CustomerEventMongoRepository {
         this.connection = this.dbQueryConnection.getConenction()
         this.connection.then(result => {
             this.model = result.model('CustomerAgregate', CustomerSchema);
-        })
+        });
     }
 
-    public async create({ id, status, payload, meta }:
+    public async add({ id, status, payload, meta }:
         {   id: string,
             status: string,
             payload: { customerName: string, customerContact: string },
             meta: { title: string, createdAt: Date }
-        }) 
+        })
         {
 
         return await this.model.create({ aggregateId: id,status, payload, meta })

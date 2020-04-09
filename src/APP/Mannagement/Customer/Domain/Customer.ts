@@ -27,8 +27,8 @@ export class Customer extends AggregateRoot {
 
 
     public creationSuccess(customer: Customer) {
-        this.apply(new CustomerCreatedEvent(this));
-        console.log("aplicando un nuevo evento en customer.create()")
+        this.apply(new CustomerCreatedEvent(customer));
+        console.log("aplicando un nuevo evento en customer.create()");
     }
 
     public delete(): void {

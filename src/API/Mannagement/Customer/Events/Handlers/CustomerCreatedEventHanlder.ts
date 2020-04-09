@@ -1,9 +1,7 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs'
 
 import { CustomerCreatedEvent } from "../CustomerCreatedEvent";
-import { Inject } from '@nestjs/common';
-import { CustomerEventRepository } from 'src/APP/Mannagement/Customer/Domain/Repository/EventStore/CustomerEventRepository';
-
+//import { Inject } from '@nestjs/common';
 @EventsHandler(CustomerCreatedEvent)
 export class CustomerCreatedEventHanlder implements IEventHandler<CustomerCreatedEvent> {
 
@@ -15,11 +13,6 @@ export class CustomerCreatedEventHanlder implements IEventHandler<CustomerCreate
         event: CustomerCreatedEvent
     ) {
         console.log(event, 'on event handler');
-
-        const {id, name, contact} = event.customer.toPrimitives()
-
-        console.log(`customer: ${id}, ${name}, ${contact}`);
-
     }
 
 }

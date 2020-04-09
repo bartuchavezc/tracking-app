@@ -1,48 +1,43 @@
-import { CustomerCommandRepository } from "../../Domain/Repository/Command/CustomerCommandRepository";
+import { CustomerStoreRepository } from 'src/APP/Mannagement/Customer/Domain/Repository/EventStore/CustomerStoreRepository';
 import { Customer } from "../../Domain/Customer";
 import { Inject, Injectable } from "@nestjs/common";
 import { GeneratedUuid } from "src/APP/Shared/Domain/GeneratedUuid";
-import { TypeOrmCustomerEntity } from "../../Infraestructure/Persistence/TypeORM/Entity/TypeOrmCustomer.entity";
 import { Uuid } from "src/APP/Shared/Domain/ValueObjects/Uuid";
+import { MongoCustomer } from '../../Infraestructure/EventStore/Mongoose/Schema/MongoCustomer';
+import { mapped } from '../../Infraestructure/EventStore/Mongoose/mapper/toDoaminEntity';
 
 @Injectable()
 export class CustomerCreator {
 
   constructor(
-    @Inject('CustomerCommandRepository') private repository:
+    @Inject('CustomerStoreRepository') private storeRepository: CustomerStoreRepository
   ) { }
 
   __invoke(name: string, contact: string): Promise<Customer> {
-    
+
     return new Promise(async (resolve, reject) => {
-      await this.create(name, contact)
-        .then(result => {
-          resolve(new Customer(new Uuid(result.id), result.name, result.contact, result.createdAt));
+
+      const id = new Uuid(new GeneratedUuid().__invoke());
+
+      const status = 'usable'
+      const payload = {
+        customerName: name,
+        customerContact: contact
+      }
+
+      const meta = {
+        title: 'customerCreatedEvent',
+        createdAt: new Date()
+      }
+
+      await this.storeRepository
+        .add({ id: id.toString(), status, payload, meta })
+        .then((result) => {
+          let customer = mapped(result);
+          resolve(new Customer(new Uuid(customer.id), customer.name, customer.contact, customer.createdAt));
         })
         .catch(error => reject(error))
     })
-
-  }
-
-  private async create(name: string, contact: string): Promise<TypeOrmCustomerEntity> {
-    //const customer = new Customer( new Uuid(new GeneratedUuid().__invoke()), name, contact, new Date());
-    //return await this.repository.save(customer);
-
-    const id = new Uuid(new GeneratedUuid().__invoke())
-    const createdAt = new Date();     
-    const status = 'usable'
-    const payload = {
-        customerName: name,
-        customerContact: contact
-    }
-
-    const meta = {
-        title: 'Nuevo customer creado',
-        createdAt
-    }
-
-    await this.repository.create({id, status, payload, meta })
-
 
   }
 

@@ -2,7 +2,7 @@ import { Document } from 'mongoose'
 
 export interface MongoCustomer extends Document{
 
-    readonly agregateId: string,
+    readonly aggregateId: string,
     readonly status: string,
     readonly payload: {
         customerName: string,

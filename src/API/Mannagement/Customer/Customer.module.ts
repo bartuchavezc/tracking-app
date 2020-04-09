@@ -6,21 +6,20 @@ import { CqrsModule, CommandBus, EventBus } from '@nestjs/cqrs'
 //Controllers
 import { CustomerControllers } from './Controllers/';
 
-//repository
-import { TypeOrmCustomerCommandRepository } from 'src/APP/Mannagement/Customer/Infraestructure/Persistence/TypeORM/TypeOrmCustomerCommandRepository';
-
 //comand handler
 import { CustomerCreateCommandHanlder } from './Commands/Handlers/CustomerCreateCommandHandler';
 
 //event handler
 import { CustomerCreatedEventHanlder } from './Events/Handlers/CustomerCreatedEventHanlder';
 
-import { ConfigModule } from '@nestjs/config'
+//customer event store repository
+import { CustomerStoreMongooseRepository } from 'src/APP/Mannagement/Customer/Infraestructure/EventStore/Mongoose/CustomerStoreMongooseRepository';
+
+import { ConfigModule } from '@nestjs/config';
 
 //customer addapters
 import { CustomerCreator } from 'src/APP/Mannagement/Customer/Application/Create/CustomerCreator';
 import { DatabaseModule } from 'src/Databases/Database.module';
-import { CustomerEventMongoRepository } from 'src/APP/Mannagement/Customer/Infraestructure/EventStore/Mongoose/CustomerEventMongoRepository';
 
 @Module({
     imports: [
@@ -33,12 +32,8 @@ import { CustomerEventMongoRepository } from 'src/APP/Mannagement/Customer/Infra
     ],
     providers: [
         {
-            provide: 'CustomerCommandRepository',
-            useClass: TypeOrmCustomerCommandRepository
-        },
-        {
-            provide: 'CustomerEventRepository',
-            useClass: CustomerEventMongoRepository
+            provide: 'CustomerStoreRepository',
+            useClass: CustomerStoreMongooseRepository
         },
         {
             provide: 'CustomerCreator',
