@@ -8,6 +8,7 @@ import { CustomerControllers } from './Controllers/';
 
 //comand handler
 import { CustomerCreateCommandHanlder } from './Commands/Handlers/CustomerCreateCommandHandler';
+import { CustomerUpdateCommandHanlder } from './Commands/Handlers/CustomerUpdateCommandHanlder'
 
 //event handler
 import { CustomerCreatedEventHanlder } from './Events/Handlers/CustomerCreatedEventHanlder';
@@ -17,8 +18,11 @@ import { CustomerStoreMongooseRepository } from 'src/APP/Mannagement/Customer/In
 
 import { ConfigModule } from '@nestjs/config';
 
-//customer addapters
+//customer application services
 import { CustomerCreator } from 'src/APP/Mannagement/Customer/Application/Create/CustomerCreator';
+import { CustomerChangeNameService } from 'src/APP/Mannagement/Customer/Application/Update/CustomerChangeNameService';
+import { CustomerChangeContactService } from 'src/APP/Mannagement/Customer/Application/Update/CustomerChangeContactService';
+
 import { DatabaseModule } from 'src/Databases/Database.module';
 
 @Module({
@@ -39,10 +43,19 @@ import { DatabaseModule } from 'src/Databases/Database.module';
             provide: 'CustomerCreator',
             useClass: CustomerCreator
         },
+        {
+            provide: "CustomerChangeNameService",
+            useClass: CustomerChangeNameService
+        },
+        {
+            provide: "CustomerChangeContactService",
+            useClass: CustomerChangeContactService
+        },
         /**
-         * Customer Command handler
+         * Customer Command handlers
          */
         CustomerCreateCommandHanlder,
+        CustomerUpdateCommandHanlder,
         /**
          * Customer Event handler
          */

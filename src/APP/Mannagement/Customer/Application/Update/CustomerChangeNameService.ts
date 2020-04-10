@@ -13,12 +13,27 @@ export class CustomerChangeNameService {
      * @param name the new customer name
      */
     async makeChange(id: String, name: String): Promise<any> {
-        await this.storeRepository.add({ id, name })
+        
+        const event = "ChangedCustomerName";
+
+        const payload = {
+            customerName: name
+        }
+
+        const meta= {
+            updatedAt: new Date()
+        }
+
+        return await this.storeRepository.add({ event, id, payload, meta })
             .then(result => { 
+               
                 return {id: result.aggregateId, name: result.payload.customerName}
+            
             })
             .catch(err => {
+                
                 throw err;
+            
             })
     }
 

@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
 
-export class CustomerDTO{
+export class CustomerPostDTO{
 
     @IsNotEmpty()
     public readonly name: string;

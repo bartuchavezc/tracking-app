@@ -12,7 +12,18 @@ export class CustomerChangeContactService {
      * @param contact the new customer contact
      */
     async makeChange(id: String, contact: String): Promise<any> {
-        await this.storeRepository.add({ id, contact })
+        
+        const event = "ChangedCustomerName";
+
+        const payload = {
+            customerContact: contact
+        }
+
+        const meta= {
+            updatedAt: new Date()
+        }
+
+        return await this.storeRepository.add({event, id, contact, payload, meta })
             .then(result => { 
                 return {id: result.aggregateId, contact: result.payload.customerContact }
             })

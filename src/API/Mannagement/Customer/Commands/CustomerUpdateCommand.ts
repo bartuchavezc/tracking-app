@@ -6,8 +6,8 @@ export class CustomerUpdateCommand implements ICommand {
     name: String;
     contact: String;
 
-    constructor({id, name, contact}: {id: String, name: String, contact: String}){
-        if(id) this.id = id;
+    constructor(id: String, {name, contact}){
+        this.id = id;
         if(name) this.name = name;
         if(contact) this.contact = contact;
     }
