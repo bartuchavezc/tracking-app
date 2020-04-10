@@ -13,7 +13,7 @@ export class CustomerCreator {
     @Inject('CustomerStoreRepository') private storeRepository: CustomerStoreRepository
   ) { }
 
-  __invoke(name: string, contact: string): Promise<Customer> {
+  __invoke(name: String, contact: String): Promise<Customer> {
 
     return new Promise(async (resolve, reject) => {
 
