@@ -1,7 +1,7 @@
 //nnestjs
 import { Module, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { CqrsModule, CommandBus, EventBus } from '@nestjs/cqrs'
+import { CqrsModule, CommandBus, EventBus, QueryBus } from '@nestjs/cqrs'
 
 //Controllers
 import { CustomerControllers } from './Controllers/';
@@ -13,9 +13,6 @@ import { CustomerUpdateCommandHanlder } from './Commands/Handlers/CustomerUpdate
 //event handler
 import { CustomerCreatedEventHanlder } from './Events/Handlers/CustomerCreatedEventHanlder';
 
-//customer event store repository
-import { CustomerStoreMongooseRepository } from 'src/APP/Mannagement/Customer/Infraestructure/EventStore/Mongoose/CustomerStoreMongooseRepository';
-
 import { ConfigModule } from '@nestjs/config';
 
 //customer application services
@@ -24,6 +21,9 @@ import { CustomerChangeNameService } from 'src/APP/Mannagement/Customer/Applicat
 import { CustomerChangeContactService } from 'src/APP/Mannagement/Customer/Application/Update/CustomerChangeContactService';
 
 import { DatabaseModule } from 'src/Databases/Database.module';
+import { AllCustomerQueryHandler } from './Query/Handler/AllCustomerQueryHanlder';
+import { SearchAllCustomersService } from 'src/APP/Mannagement/Customer/Application/SearchAll/SearchAllCustomersService';
+import { EventCustomerMongoRepository } from 'src/APP/Mannagement/Customer/Infraestructure/EventStore/Mongodb/Repository/EventCustomerMongoRepository';
 
 @Module({
     imports: [
@@ -37,7 +37,7 @@ import { DatabaseModule } from 'src/Databases/Database.module';
     providers: [
         {
             provide: 'CustomerStoreRepository',
-            useClass: CustomerStoreMongooseRepository
+            useClass: EventCustomerMongoRepository
         },
         {
             provide: 'CustomerCreator',
@@ -51,11 +51,19 @@ import { DatabaseModule } from 'src/Databases/Database.module';
             provide: "CustomerChangeContactService",
             useClass: CustomerChangeContactService
         },
+        {
+            provide: "SearchAllCustomersService",
+            useClass: SearchAllCustomersService
+        },
         /**
          * Customer Command handlers
          */
         CustomerCreateCommandHanlder,
         CustomerUpdateCommandHanlder,
+        /**
+         * Customer query handlers
+         */
+        AllCustomerQueryHandler,
         /**
          * Customer Event handler
          */
@@ -67,13 +75,19 @@ export class CustomerModule implements OnModuleInit {
     constructor(
         private readonly moduleRef: ModuleRef,
         private readonly command$: CommandBus,
+        private readonly query$: QueryBus,
         private readonly event$: EventBus
     ) { }
 
     async onModuleInit(){
         
         this.command$.register([
-            CustomerCreateCommandHanlder
+            CustomerCreateCommandHanlder,
+            CustomerUpdateCommandHanlder
+        ]);
+
+        this.query$.register([
+            AllCustomerQueryHandler,
         ]);
         
         this.event$.register([

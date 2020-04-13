@@ -1,3 +1,5 @@
+import { IEventCustomerSchema } from "../../../Infraestructure/EventStore/Mongodb/Schema/IEventCustomerSchema";
+
 export interface CustomerQueryRepository {
-    get();
+    getAll(): Promise<IEventCustomerSchema[]>;
 }

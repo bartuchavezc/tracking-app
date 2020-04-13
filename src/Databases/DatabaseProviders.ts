@@ -1,8 +1,5 @@
-
-import { DbCommandProvider } from './CommandsDB/DbCommandProvider'
-import { DbQueryProvider } from './QuerysDB/DbQueryProvider'
+import { dbStoreProvider } from './Eventstore/Mongoose/Provider'
 
 export const DatabaseProviders = [
-    DbCommandProvider,
-    DbQueryProvider    
+    dbStoreProvider
 ]

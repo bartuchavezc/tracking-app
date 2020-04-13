@@ -3,9 +3,7 @@ import { Customer } from "../../Domain/Customer";
 import { Inject, Injectable } from "@nestjs/common";
 import { GeneratedUuid } from "src/APP/Shared/Domain/GeneratedUuid";
 import { Uuid } from "src/APP/Shared/Domain/ValueObjects/Uuid";
-import { MongoCustomer } from '../../Infraestructure/EventStore/Mongoose/Schema/MongoCustomer';
-import { mapped } from '../../Infraestructure/EventStore/Mongoose/mapper/toDoaminEntity';
-
+import { CustomerEvent } from '../../Infraestructure/EventStore/CustomerEvent';
 @Injectable()
 export class CustomerCreator {
 
@@ -13,8 +11,44 @@ export class CustomerCreator {
     @Inject('CustomerStoreRepository') private storeRepository: CustomerStoreRepository
   ) { }
 
-  __invoke(name: String, contact: String): Promise<Customer> {
+  /**
+   * 
+   * @param event 
+   * @param name 
+   * @param contact 
+   */
+  __invoke(event: String, name: String, contact: String): Promise<Customer> {
+    return new Promise((resolve, reject) => {
+      try {
+        //create customer
+        const customer = new Customer(
+          new Uuid(GeneratedUuid.__invoke()),
+          name, contact,
+          new Date());
 
+        //save customer creation event
+        this.storeRepository
+          .add(new CustomerEvent(
+            customer.id.toString(),
+            event,
+            { name, contact, meta: { creaedAt: customer.createdAt } }
+            , new Date())
+          )
+          .then(result => { //if all right return the customer
+            resolve(customer);
+          })
+          .catch(error => {//if an error ocurred it's throw 
+            throw error;
+          })
+      } catch (error) {//if an error ocurred reject the promise
+        reject(error);
+      }
+    });
+  }
+
+  /**
+   * 
+   * 
     return new Promise(async (resolve, reject) => {
 
 
@@ -40,7 +74,6 @@ export class CustomerCreator {
         })
         .catch(error => reject(error))
     })
-
-  }
+   */
 
 }

@@ -4,7 +4,7 @@ import { Connection } from 'mongoose'
 import { ConfigService } from '@nestjs/config';
 import { Inject } from '@nestjs/common';
 
-export class DbQueryConnection {
+export class StoreConnector {
 
     constructor(@Inject('config_service') private config: ConfigService) {}
 
@@ -12,7 +12,7 @@ export class DbQueryConnection {
         return this.connect()
     }
 
-    async connect(): Promise<Connection> {
+    private async connect(): Promise<Connection> {
 
         return await mongoose.createConnection(
             `mongodb://${this.config.get<string>('QUERY_DB_HOST')}:${this.config.get<string>('QUERY_DB_PORT')}/${this.config.get<string>('QUERY_DB_NAME')}`,

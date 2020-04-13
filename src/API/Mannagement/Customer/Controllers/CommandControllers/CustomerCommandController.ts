@@ -33,7 +33,7 @@ export class CustomerCommandController extends WebController {
     }
 
     @Put(':id')
-    public async update(@Param("id") id: String, @Body() request, @Res() response) {
+    public async update(@Param("id") id: string, @Body() request, @Res() response) {
         const validationErrors = await this.validatePutRequest(id, request);
         
         return (validationErrors).length
@@ -54,7 +54,7 @@ export class CustomerCommandController extends WebController {
 
     }
 
-    private async updateCustomer(id: String, @Body() {name, contact}, @Res() response) {
+    private async updateCustomer(id: string, @Body() {name, contact}, @Res() response) {
 
         await this.commandBus.execute(new CustomerUpdateCommand(id, { name, contact }))
             .then(() => {

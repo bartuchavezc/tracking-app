@@ -15,12 +15,12 @@ export class CustomerCreateCommandHanlder implements ICommandHandler<CustomerCre
 
     execute(command: CustomerCreateCommand) {
         return new Promise(async (resolve, reject) => {
-            await this.creator.__invoke(command.name, command.contact)
+            await this.creator.__invoke("CreatedCustomer", command.name, command.contact)
             .then(result => {
                 resolve();
                 const createdCustomer = this.publisher.mergeObjectContext(result)
                 
-                createdCustomer.creationSuccess(createdCustomer);
+                createdCustomer.created(createdCustomer);
                 createdCustomer.commit();
             })
             .catch(error => {reject(new CreationFailedException(error, 'CustomerCommandHandler')) })

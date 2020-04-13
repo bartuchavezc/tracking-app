@@ -4,9 +4,9 @@ import { DoesNotUuidException } from "../Exception/DoesNotUuidException";
 export class Uuid {
 
     @IsUUID("4")
-    private value: string;
+    private value;
     
-    constructor(value: string){
+    constructor(value: String){
 
         this.value = value;
 

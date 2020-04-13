@@ -1,5 +1,8 @@
-import { MongoCustomer } from "../../../Infraestructure/EventStore/Mongoose/Schema/MongoCustomer";
+import { CustomerEvent } from "../../../Infraestructure/EventStore/CustomerEvent";
 
 export interface CustomerStoreRepository {
-    add(customer: object): Promise<MongoCustomer>;
+    add(event: CustomerEvent): Promise<any>;
+    back(aggregateId: String);
+    recover(aggregateId: String);
+    getAll();
 }

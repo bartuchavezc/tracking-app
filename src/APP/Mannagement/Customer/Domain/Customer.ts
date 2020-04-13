@@ -1,17 +1,19 @@
 import { AggregateRoot } from '@nestjs/cqrs'
 import { CustomerCreatedEvent } from 'src/API/Mannagement/Customer/Events/CustomerCreatedEvent';
 import { Uuid } from 'src/APP/Shared/Domain/ValueObjects/Uuid';
+import { CustomerEvent } from '../Infraestructure/EventStore/CustomerEvent';
+import { CustomerSnapShot } from '../Infraestructure/EventStore/CustomerSnapshoot';
 
 export class Customer extends AggregateRoot {
 
     creationFailure: { error: Error, message: string };
 
-    deletedAt: Date;
+    private deletedAt: Date;
 
     constructor(
         readonly id: Uuid,
-        readonly name: string,
-        readonly contact: string,
+        readonly name: String,
+        readonly contact: String,
         readonly createdAt: Date
     ) {
         super();
@@ -25,10 +27,13 @@ export class Customer extends AggregateRoot {
         }
     }
 
-
-    public creationSuccess(customer: Customer) {
+    public created(customer: Customer) {
         this.apply(new CustomerCreatedEvent(customer));
         console.log("aplicando un nuevo evento en customer.create()");
+    }
+
+    getSnapshot(eventsList: CustomerEvent[], prevSnapshot: CustomerSnapShot){
+
     }
 
     public delete(): void {
