@@ -9,8 +9,8 @@ export interface IEventCustomerSchema extends Document {
         contact: String,
         meta: {
             createdAt: Date,
-            deleteAt: Date,
-            updateAt: Date
+            deletedAt: Date,
+            updatedAt: Date
         }
     };
     readonly productionDate: Date

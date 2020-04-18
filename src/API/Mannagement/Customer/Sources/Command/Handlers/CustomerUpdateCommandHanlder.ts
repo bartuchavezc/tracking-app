@@ -1,14 +1,15 @@
-import { CommandHandler, ICommandHandler, EventPublisher, EventBus } from "@nestjs/cqrs";
-import { CustomerUpdateCommand } from "../CustomerUpdateCommand";
+import { CommandHandler, ICommandHandler, EventBus } from "@nestjs/cqrs";
+import { NestCustomerUpdateCommand } from "../NestCustomerUpdateCommand";
 import { Inject } from "@nestjs/common";
-import { CustomerChangeNameService } from "src/APP/Mannagement/Customer/Application/Update/CustomerChangeNameService";
-import { CustomerChangeContactService } from "src/APP/Mannagement/Customer/Application/Update/CustomerChangeContactService";
-import { CustomerChangedNameEvent } from "../../Events/CustomerChangedNameEvent";
-import { CustomerChangedContactEvent } from "../../Events/CustomerChangedContactEvent";
+import { CustomerChangeNameService } from "src/APP/Mannagement/Customer/Application/Services/Update/CustomerChangeNameService";
+import { CustomerChangeContactService } from "src/APP/Mannagement/Customer/Application/Services/Update/CustomerChangeContactService";
+import { CustomerUpdateCommand } from "src/APP/Mannagement/Customer/Application/Command/CustomerUpdateCommand";
+import { NestCustomerChangedNameEvent } from "../../Events/NestCustomerChangedNameEvent";
+import { NestCustomerChangedContactEvent } from "../../Events/NestCustomerChangedContactEvent";
 
 
-@CommandHandler(CustomerUpdateCommand)
-export class CustomerUpdateCommandHanlder implements ICommandHandler<CustomerUpdateCommand>{
+@CommandHandler(NestCustomerUpdateCommand)
+export class CustomerUpdateCommandHanlder implements ICommandHandler<NestCustomerUpdateCommand>{
 
 
     constructor(
@@ -23,7 +24,7 @@ export class CustomerUpdateCommandHanlder implements ICommandHandler<CustomerUpd
             if (command.name) {       
                 await this.changeCustomerNameService.makeChange(command.id , command.name)
                     .then(result => {
-                        this.eventBus.publish(new CustomerChangedNameEvent(result.id, result.name));
+                        this.eventBus.publish(new NestCustomerChangedNameEvent(result.id, result.name));
                     })
                     .catch(err => {
                         reject(err);
@@ -33,7 +34,7 @@ export class CustomerUpdateCommandHanlder implements ICommandHandler<CustomerUpd
             if (command.contact) {       
                 await this.changeCustomerContactService.makeChange(command.id , command.contact)
                     .then(result => {
-                        this.eventBus.publish(new CustomerChangedContactEvent(result.id, result.name));
+                        this.eventBus.publish(new NestCustomerChangedContactEvent(result.id, result.name));
                     })
                     .catch(err => {
                         reject(err);

@@ -1,5 +1,5 @@
 import { AggregateRoot } from '@nestjs/cqrs'
-import { CustomerCreatedEvent } from 'src/API/Mannagement/Customer/Events/CustomerCreatedEvent';
+import { NestCustomerCreatedEvent } from 'src/API/Mannagement/Customer/Sources/Events/NestCustomerCreatedEvent';
 import { Uuid } from 'src/APP/Shared/Domain/ValueObjects/Uuid';
 import { CustomerEvent } from '../Infraestructure/EventStore/CustomerEvent';
 import { CustomerSnapShot } from '../Infraestructure/EventStore/CustomerSnapshoot';
@@ -28,7 +28,7 @@ export class Customer extends AggregateRoot {
     }
 
     public created(customer: Customer) {
-        this.apply(new CustomerCreatedEvent(customer));
+        this.apply(new NestCustomerCreatedEvent(customer));
         console.log("aplicando un nuevo evento en customer.create()");
     }
 

@@ -3,8 +3,9 @@ import { Inject, Injectable } from "@nestjs/common";
 import { CustomerEvent } from "../../CustomerEvent";
 import { StoreConnector } from "src/Databases/Eventstore/Mongoose/Connection";
 import { EventCustomerSchema } from "../Schema/EventCustomerSchema";
-import { Model } from "mongoose";
+import { Model, Aggregate } from "mongoose";
 import { IEventCustomerSchema } from "../Schema/IEventCustomerSchema";
+import { IEventCustomerMerged } from "../Schema/IEventCustomerMerged";
 
 @Injectable()
 export class EventCustomerMongoRepository implements CustomerStoreRepository {
@@ -23,12 +24,44 @@ export class EventCustomerMongoRepository implements CustomerStoreRepository {
             })
     }
 
-    async add(event: CustomerEvent): Promise<any> {
-        await this.model.create(event);
+    add(event: CustomerEvent): Promise<CustomerEvent> {
+        return new Promise(async (resolve, reject) => {
+            await this.model.create(event)
+                .then(result => {
+                    resolve(
+                        new CustomerEvent(result.aggregateId, result.event, result.payload, result.productionDate))
+                })
+                .catch(err => {
+                    reject(err);
+                })
+        })
     }
 
-    async getAll(){
-        return await this.model.find() 
+    getAll(): Aggregate<IEventCustomerMerged[]> {
+        return this.model.aggregate([
+            {
+                $group: {
+                    _id: "$aggregateId",
+                    aggregate: { $mergeObjects: { payload: "$payload", productionDate: "$productionDate" } }
+                }
+            },
+            {
+                $sort: {
+                    "aggregate.payload.name": 1
+                }
+            }
+        ])
+    }
+
+    getById(id: string): Aggregate<IEventCustomerMerged[]>{
+        return this.model.aggregate([
+            {
+                $match: {aggregateId: id} 
+            },
+            {
+                $group: {_id: "$aggregateId", aggregate: {$mergeObjects: {payload: "$payload", productionDate: "$productionDate"}}  }
+            }
+        ])
     }
 
     back(aggregateId: String) { }

@@ -1,10 +1,10 @@
-import { CustomerStoreRepository } from "../../Domain/Repository/EventStore/CustomerStoreRepository";
+import { CustomerStoreRepository } from "../../../Domain/Repository/EventStore/CustomerStoreRepository";
 import { Inject } from "@nestjs/common";
-import { EventCustomerMongoRepository } from "../../Infraestructure/EventStore/Mongodb/Repository/EventCustomerMongoRepository";
+import { CustomerEvent } from "../../../Infraestructure/EventStore/CustomerEvent";
 
 export class CustomerChangeContactService {
     constructor(
-        @Inject("CustomerStoreRepository") private readonly storeRepository: EventCustomerMongoRepository
+        @Inject("CustomerStoreRepository") private readonly storeRepository: CustomerStoreRepository
     ) { }
 
     /**
@@ -22,7 +22,7 @@ export class CustomerChangeContactService {
         }
 
 
-        return await this.storeRepository.add({event, aggregateId, payload, productionDate: new Date() })
+        return await this.storeRepository.add(new CustomerEvent(event, aggregateId, payload, new Date()))
             .then(result => { 
                 return {id: result.aggregateId, contact: result.payload.contact }
             })

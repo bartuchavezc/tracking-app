@@ -1,9 +1,9 @@
 import { AppConfig } from "../../../Shared/app.config";
 
-import { Controller, Get } from "@nestjs/common";
-import { Customer } from "src/APP/Mannagement/Customer/Domain/Customer";
+import { Controller, Get, Param } from "@nestjs/common";
 import { QueryBus } from "@nestjs/cqrs";
-import { AllCustomerQuery } from "../../Query/AllCustomerQuery";
+import { AllCustomerQuery } from "../../Sources/Query/AllCustomerQuery";
+import { OneCustomerQuery } from "../../Sources/Query/OneCustomerQuery";
 
 @Controller(`${AppConfig.MainRoute}/customer`)
 export class CustomerQueryController {
@@ -13,8 +13,13 @@ export class CustomerQueryController {
     ){}
 
     @Get()
-    async getAll(): Promise<Customer[]> {
-        return await this.queryBus.execute(new AllCustomerQuery())    
+    async getAll(){
+        return await this.queryBus.execute(new AllCustomerQuery())
+    }
+
+    @Get(":id")
+    async getById(@Param("id") id: string){
+        return await this.queryBus.execute(new OneCustomerQuery(id))
     }
 
 }

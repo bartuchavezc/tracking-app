@@ -1,17 +1,15 @@
 import { AppConfig } from "../../../Shared/app.config";
 
-import { validate, ValidationError } from 'class-validator'
-
 import { WebController } from "src/API/Mannagement/Shared/application/nest/WebController";
 import { Controller, Post, Body, Res, Put, Param } from "@nestjs/common";
 
 import { CommandBus } from '@nestjs/cqrs'
 
-import { CustomerCreateCommand } from "../../Commands/CustomerCreateCommand";
-import { CustomerUpdateCommand } from "../../Commands/CustomerUpdateCommand";
+import { NestCustomerCreateCommand } from "../../Sources/Command/NestCustomerCreateCommand";
+import { NestCustomerUpdateCommand } from "../../Sources/Command/NestCustomerUpdateCommand";
 
-import { CustomerPostDTO } from "../../DTO/CustomerPostDTO";
-import { CustomerUpdateDTO } from "../../DTO/CustomerUpdateDTO";
+import { CreateCustomerValidationObject } from "../../Sources/Validation/CreateCustomerValidationObject";
+import { UpdateCustomerValidationObject } from "../../Sources/Validation/UpdateCustomerValidationObject";
 
 @Controller(`${AppConfig.MainRoute}/customer`)
 export class CustomerCommandController extends WebController {
@@ -23,27 +21,17 @@ export class CustomerCommandController extends WebController {
     }
 
     @Post()
-    public async create(@Body() request, @Res() response) {
-
-        const validationErrors = await this.validatePostRequest(request);
-
-        return (validationErrors).length
-            ? this.responseWithValidationErrors('/customer', validationErrors, response)
-            : this.createCustomer(request, response);
+    public create(@Body() customer: CreateCustomerValidationObject, @Res() response) {
+        this.createCustomer(customer.name, customer.contact, response);
     }
 
     @Put(':id')
-    public async update(@Param("id") id: string, @Body() request, @Res() response) {
-        const validationErrors = await this.validatePutRequest(id, request);
-        
-        return (validationErrors).length
-            ? this.responseWithValidationErrors('/customer', validationErrors, response)
-            : this.updateCustomer(id, request, response);
+    public  update(@Param("id") id: string, @Body() customer: UpdateCustomerValidationObject, @Res() response) {
+        this.updateCustomer(id, customer, response);
     }
 
-    private async createCustomer(@Body() request, @Res() response) {
-
-        await this.commandBus.execute(new CustomerCreateCommand(request.name, request.contact))
+    private async createCustomer(name: String, contact: String, @Res() response) {
+        await this.commandBus.execute(new NestCustomerCreateCommand(name, contact))
             .then(() => {
                 this.redirectWithMessage('/customers', response, 'creado con exito')
             })
@@ -51,12 +39,11 @@ export class CustomerCommandController extends WebController {
                 console.log(error);
                 this.redirectWithMessage('/customer', response, `error creating customer`);
             })
-
     }
 
     private async updateCustomer(id: string, @Body() {name, contact}, @Res() response) {
 
-        await this.commandBus.execute(new CustomerUpdateCommand(id, { name, contact }))
+        await this.commandBus.execute(new NestCustomerUpdateCommand(id, { name, contact }))
             .then(() => {
                 this.redirectWithMessage('/customer', response, 'actualizado con exito');
             })
@@ -66,13 +53,5 @@ export class CustomerCommandController extends WebController {
             })
     }
 
-
-    private async validatePostRequest(@Body() request): Promise<ValidationError[]> {
-        return await validate(new CustomerPostDTO(request))
-    }
-
-    private async validatePutRequest(id, @Body() request){
-        return await validate(new CustomerUpdateDTO(id));
-    }
 
 }

@@ -7,23 +7,22 @@ import { CqrsModule, CommandBus, EventBus, QueryBus } from '@nestjs/cqrs'
 import { CustomerControllers } from './Controllers/';
 
 //comand handler
-import { CustomerCreateCommandHanlder } from './Commands/Handlers/CustomerCreateCommandHandler';
-import { CustomerUpdateCommandHanlder } from './Commands/Handlers/CustomerUpdateCommandHanlder'
-
-//event handler
-import { CustomerCreatedEventHanlder } from './Events/Handlers/CustomerCreatedEventHanlder';
+import { CustomerCreateCommandHanlder } from './Sources/Command/Handlers/CustomerCreateCommandHandler';
+import { CustomerUpdateCommandHanlder } from './Sources/Command/Handlers/CustomerUpdateCommandHanlder'
 
 import { ConfigModule } from '@nestjs/config';
-
-//customer application services
-import { CustomerCreator } from 'src/APP/Mannagement/Customer/Application/Create/CustomerCreator';
-import { CustomerChangeNameService } from 'src/APP/Mannagement/Customer/Application/Update/CustomerChangeNameService';
-import { CustomerChangeContactService } from 'src/APP/Mannagement/Customer/Application/Update/CustomerChangeContactService';
-
 import { DatabaseModule } from 'src/Databases/Database.module';
-import { AllCustomerQueryHandler } from './Query/Handler/AllCustomerQueryHanlder';
-import { SearchAllCustomersService } from 'src/APP/Mannagement/Customer/Application/SearchAll/SearchAllCustomersService';
+
+/*********************************************************************
+ *                        IMPORTS PROVIDERS                          *
+ *********************************************************************/
+
+//*    service providers
+import { CustomerServiceProvider } from 'src/APP/Mannagement/Customer/Application/Services/CustomerServiceProvider';
+
+import { AllCustomerQueryHandler } from './Sources/Query/Handler/AllCustomerQueryHanlder';
 import { EventCustomerMongoRepository } from 'src/APP/Mannagement/Customer/Infraestructure/EventStore/Mongodb/Repository/EventCustomerMongoRepository';
+import { OneCustomerQueryHandler } from './Sources/Query/Handler/OneCustomerQueryHandler';
 
 @Module({
     imports: [
@@ -39,35 +38,15 @@ import { EventCustomerMongoRepository } from 'src/APP/Mannagement/Customer/Infra
             provide: 'CustomerStoreRepository',
             useClass: EventCustomerMongoRepository
         },
-        {
-            provide: 'CustomerCreator',
-            useClass: CustomerCreator
-        },
-        {
-            provide: "CustomerChangeNameService",
-            useClass: CustomerChangeNameService
-        },
-        {
-            provide: "CustomerChangeContactService",
-            useClass: CustomerChangeContactService
-        },
-        {
-            provide: "SearchAllCustomersService",
-            useClass: SearchAllCustomersService
-        },
-        /**
-         * Customer Command handlers
-         */
+        ...CustomerServiceProvider ,
+        //command handlers providers
         CustomerCreateCommandHanlder,
         CustomerUpdateCommandHanlder,
         /**
          * Customer query handlers
          */
         AllCustomerQueryHandler,
-        /**
-         * Customer Event handler
-         */
-        CustomerCreatedEventHanlder
+        OneCustomerQueryHandler,
     ]
 })
 export class CustomerModule implements OnModuleInit {
@@ -88,11 +67,10 @@ export class CustomerModule implements OnModuleInit {
 
         this.query$.register([
             AllCustomerQueryHandler,
+            OneCustomerQueryHandler
         ]);
         
-        this.event$.register([
-            CustomerCreatedEventHanlder
-        ]);
+        this.event$.register([]);
     }
 
 }

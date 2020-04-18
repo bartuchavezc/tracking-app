@@ -1,11 +1,11 @@
 import { Inject } from "@nestjs/common";
-import { CustomerStoreRepository } from "../../Domain/Repository/EventStore/CustomerStoreRepository";
-import { EventCustomerMongoRepository } from "../../Infraestructure/EventStore/Mongodb/Repository/EventCustomerMongoRepository";
+import { CustomerStoreRepository } from "../../../Domain/Repository/EventStore/CustomerStoreRepository";
+import { CustomerEvent } from "../../../Infraestructure/EventStore/CustomerEvent";
 
 export class CustomerChangeNameService {
 
     constructor(
-        @Inject("CustomerStoreRepository") private readonly storeRepository: EventCustomerMongoRepository
+        @Inject("CustomerStoreRepository") private readonly storeRepository: CustomerStoreRepository
     ) { }
 
     /**
@@ -13,7 +13,7 @@ export class CustomerChangeNameService {
      * @param id customer aggregate id
      * @param name the new customer name
      */
-    async makeChange(aggregateId: string, name: String): Promise<any> {
+    async makeChange(aggregateId: string, name: String){
         
         const event = "ChangedCustomerName";
 
@@ -21,7 +21,7 @@ export class CustomerChangeNameService {
             name, updatedAt: new Date()
         }
 
-        return await this.storeRepository.add({ event, aggregateId, payload, productionDate: new Date() })
+        return await this.storeRepository.add(new CustomerEvent(aggregateId, event, payload, new Date()))
             .then(result => { 
                
                 return {id: result.aggregateId, name: result.payload.name}
