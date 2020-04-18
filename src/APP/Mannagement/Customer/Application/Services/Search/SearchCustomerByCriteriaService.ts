@@ -1,13 +1,13 @@
 import { Injectable, Inject } from "@nestjs/common";
-import { CustomerStoreRepository } from "../../../Domain/Repository/EventStore/CustomerStoreRepository";
 import { CustomerResponseDTO } from "../../CustomerReponseDTO";
+import { ICustomerQueryRepository } from "../../../Domain/Repository/Query/ICustomerQueryRepository";
 
 
 @Injectable()
 export class SearchCustomerByCriteriaService {
 
     constructor(
-        @Inject("CustomerStoreRepository") private readonly repository: CustomerStoreRepository
+        @Inject("CustomerQueryRepository") private readonly repository: ICustomerQueryRepository
     ) { }
 
     async getById(id: string) {

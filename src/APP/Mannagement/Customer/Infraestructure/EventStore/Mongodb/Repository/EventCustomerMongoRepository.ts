@@ -37,35 +37,8 @@ export class EventCustomerMongoRepository implements CustomerStoreRepository {
         })
     }
 
-    getAll(): Aggregate<IEventCustomerMerged[]> {
-        return this.model.aggregate([
-            {
-                $group: {
-                    _id: "$aggregateId",
-                    aggregate: { $mergeObjects: { payload: "$payload", productionDate: "$productionDate" } }
-                }
-            },
-            {
-                $sort: {
-                    "aggregate.payload.name": 1
-                }
-            }
-        ])
-    }
+    back(){}
 
-    getById(id: string): Aggregate<IEventCustomerMerged[]>{
-        return this.model.aggregate([
-            {
-                $match: {aggregateId: id} 
-            },
-            {
-                $group: {_id: "$aggregateId", aggregate: {$mergeObjects: {payload: "$payload", productionDate: "$productionDate"}}  }
-            }
-        ])
-    }
-
-    back(aggregateId: String) { }
-
-    recover() { }
+    
 
 }

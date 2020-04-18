@@ -1,28 +1,26 @@
-//nnestjs
 import { Module, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { CqrsModule, CommandBus, EventBus, QueryBus } from '@nestjs/cqrs'
+import { ConfigModule } from '@nestjs/config';
+
+import { DatabaseModule } from 'src/Databases/Database.module';
 
 //Controllers
 import { CustomerControllers } from './Controllers/';
-
-//comand handler
-import { CustomerCreateCommandHanlder } from './Sources/Command/Handlers/CustomerCreateCommandHandler';
-import { CustomerUpdateCommandHanlder } from './Sources/Command/Handlers/CustomerUpdateCommandHanlder'
-
-import { ConfigModule } from '@nestjs/config';
-import { DatabaseModule } from 'src/Databases/Database.module';
 
 /*********************************************************************
  *                        IMPORTS PROVIDERS                          *
  *********************************************************************/
 
-//*    service providers
+//  Service providers
 import { CustomerServiceProvider } from 'src/APP/Mannagement/Customer/Application/Services/CustomerServiceProvider';
 
-import { AllCustomerQueryHandler } from './Sources/Query/Handler/AllCustomerQueryHanlder';
-import { EventCustomerMongoRepository } from 'src/APP/Mannagement/Customer/Infraestructure/EventStore/Mongodb/Repository/EventCustomerMongoRepository';
-import { OneCustomerQueryHandler } from './Sources/Query/Handler/OneCustomerQueryHandler';
+//  Repository providers
+import { CustomerRepositoryProviders } from 'src/APP/Mannagement/Customer/Infraestructure/EventStore/Mongodb/Repository';
+
+//  Hanlder providers
+import { CustomerCommandHandlerProviders } from './Sources/Command/Handlers';
+import { CustomerQueryHandlerProviders } from './Sources/Query/Handler';
 
 @Module({
     imports: [
@@ -34,19 +32,10 @@ import { OneCustomerQueryHandler } from './Sources/Query/Handler/OneCustomerQuer
         ...CustomerControllers
     ],
     providers: [
-        {
-            provide: 'CustomerStoreRepository',
-            useClass: EventCustomerMongoRepository
-        },
+        ...CustomerRepositoryProviders,
         ...CustomerServiceProvider ,
-        //command handlers providers
-        CustomerCreateCommandHanlder,
-        CustomerUpdateCommandHanlder,
-        /**
-         * Customer query handlers
-         */
-        AllCustomerQueryHandler,
-        OneCustomerQueryHandler,
+        ...CustomerCommandHandlerProviders,
+        ...CustomerQueryHandlerProviders
     ]
 })
 export class CustomerModule implements OnModuleInit {
@@ -61,13 +50,11 @@ export class CustomerModule implements OnModuleInit {
     async onModuleInit(){
         
         this.command$.register([
-            CustomerCreateCommandHanlder,
-            CustomerUpdateCommandHanlder
+            ...CustomerCommandHandlerProviders
         ]);
 
         this.query$.register([
-            AllCustomerQueryHandler,
-            OneCustomerQueryHandler
+            ...CustomerQueryHandlerProviders
         ]);
         
         this.event$.register([]);

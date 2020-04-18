@@ -5,7 +5,4 @@ import { IEventCustomerMerged } from "../../../Infraestructure/EventStore/Mongod
 export interface CustomerStoreRepository {
     add(event: CustomerEvent): Promise<CustomerEvent>;
     back(aggregateId: String);
-    recover(aggregateId: String);
-    getAll(): Aggregate<IEventCustomerMerged[]>;
-    getById(id: string): Aggregate<IEventCustomerMerged[]>
 }

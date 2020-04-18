@@ -1,13 +1,13 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { Customer } from "../../../Domain/Customer";
 import { Uuid } from "src/APP/Shared/Domain/ValueObjects/Uuid";
-import { CustomerStoreRepository } from "../../../Domain/Repository/EventStore/CustomerStoreRepository";
+import { ICustomerQueryRepository } from "../../../Domain/Repository/Query/ICustomerQueryRepository";
 
 @Injectable()
 export class SearchCustomersService {
 
     constructor(
-        @Inject("CustomerStoreRepository") private readonly repository: CustomerStoreRepository
+        @Inject("CustomerQueryRepository") private readonly repository: ICustomerQueryRepository
     ) { }
 
     async searchAll() {
