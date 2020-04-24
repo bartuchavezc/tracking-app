@@ -8,6 +8,5 @@ export class CreateCustomerValidationObject extends CustomerDTO{
 
     @IsEmail()
     contact: String;
-
     
 }

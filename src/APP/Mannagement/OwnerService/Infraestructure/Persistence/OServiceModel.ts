@@ -1,4 +1,4 @@
-export class CustomerEvent{
+export class OServiceEvent{
 
     constructor(
         readonly aggregateId: string,

@@ -5,7 +5,7 @@ import { QueryBus } from "@nestjs/cqrs";
 import { AllCustomerQuery } from "../../Sources/Query/AllCustomerQuery";
 import { OneCustomerQuery } from "../../Sources/Query/OneCustomerQuery";
 
-@Controller(`${AppConfig.MainRoute}/customer`)
+@Controller(`/customer`)
 export class CustomerQueryController {
 
     constructor(

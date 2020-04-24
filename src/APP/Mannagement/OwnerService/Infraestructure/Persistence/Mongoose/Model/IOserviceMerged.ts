@@ -1,18 +1,18 @@
-import { Document } from 'mongoose';
+import { Document } from "mongoose"
 
-export interface IEventCustomerMerged extends Document {
+export interface IOServiceMerged extends Document{
 
-    readonly aggregateId: string;
+    readonly aggregateId: String;
     readonly event: String;
-    
+
     readonly aggregate: {
         payload: {
             name: String,
             contact: String,
             meta: {
                 createdAt: Date,
-                deleteAt: Date,
-                updateAt: Date
+                deletedAt: Date,
+                updatedAt: Date
             }
         },
         productionDate: Date

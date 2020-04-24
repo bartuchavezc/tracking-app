@@ -11,7 +11,7 @@ import { NestCustomerUpdateCommand } from "../../Sources/Command/NestCustomerUpd
 import { CreateCustomerValidationObject } from "../../Sources/Validation/CreateCustomerValidationObject";
 import { UpdateCustomerValidationObject } from "../../Sources/Validation/UpdateCustomerValidationObject";
 
-@Controller(`${AppConfig.MainRoute}/customer`)
+@Controller(`/customer`)
 export class CustomerCommandController extends WebController {
 
     constructor(
