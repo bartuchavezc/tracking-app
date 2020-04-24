@@ -21,7 +21,7 @@ export class OServiceMongoRepository implements OServiceWriteRepository {
             })
     }
 
-    add(service: OServiceEvent) {
+    add(service: OServiceEvent): Promise<OServiceEvent> {
         return new Promise(async (resolve, reject) => {
             try {
 
