@@ -2,7 +2,7 @@ import { Document } from "mongoose"
 
 export interface IOServiceMerged extends Document{
 
-    readonly aggregateId: String;
+    readonly _id: string;
     readonly event: String;
 
     readonly aggregate: {

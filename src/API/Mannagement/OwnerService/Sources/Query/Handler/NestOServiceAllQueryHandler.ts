@@ -3,7 +3,7 @@ import { NestOServiceAllQuery } from "../NestOServicesAllQuery";
 import { Inject } from "@nestjs/common";
 import { SearchOServices } from "src/APP/Mannagement/OwnerService/Application/Service/Search/SearchOServices";
 import { OwnerService } from "src/APP/Mannagement/OwnerService/Domain/OwnerService";
-import { OServiceAllQuery } from "src/APP/Mannagement/OwnerService/Application/Query/OServiceAllQuery";
+import { OServiceQuery } from "src/APP/Mannagement/OwnerService/Application/Query/OServiceQuery";
 
 @QueryHandler(NestOServiceAllQuery)
 export class NestOServiceAllQueryHanlder implements IQueryHandler<NestOServiceAllQuery> {
@@ -12,7 +12,7 @@ export class NestOServiceAllQueryHanlder implements IQueryHandler<NestOServiceAl
         @Inject("OServiceSearchService") private readonly searchService: SearchOServices
     ) { }
 
-    execute(query: OServiceAllQuery): Promise<OwnerService[]> {
+    execute(query: OServiceQuery): Promise<OwnerService[]> {
         return new Promise(async (resolve, reject) => {
             try {
                 await this.searchService

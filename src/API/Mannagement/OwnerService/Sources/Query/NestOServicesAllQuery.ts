@@ -1,6 +1,6 @@
 import { IQuery } from "@nestjs/cqrs";
-import { OServiceAllQuery } from "src/APP/Mannagement/OwnerService/Application/Query/OServiceAllQuery";
+import { OServiceQuery } from "src/APP/Mannagement/OwnerService/Application/Query/OServiceQuery";
 
-export class NestOServiceAllQuery extends OServiceAllQuery implements IQuery {
+export class NestOServiceAllQuery extends OServiceQuery implements IQuery {
 
 }
