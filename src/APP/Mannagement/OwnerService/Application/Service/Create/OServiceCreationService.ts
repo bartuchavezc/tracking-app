@@ -1,9 +1,10 @@
-import { Inject } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { OServiceWriteRepository } from "../../../Domain/Repository/OServiceWriteRepository";
 import { OServiceEvent } from "../../../Infraestructure/Persistence/OServiceModel";
 import { Uuid } from "src/APP/Shared/Domain/ValueObjects/Uuid";
 import { GeneratedUuid } from "src/APP/Shared/Domain/GeneratedUuid";
 
+@Injectable()
 export class OServiceCrationService {
 
     constructor(

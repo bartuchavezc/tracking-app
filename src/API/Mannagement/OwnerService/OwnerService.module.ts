@@ -7,6 +7,7 @@ import { DatabaseModule } from "src/Databases/Database.module";
 import { OServiceServicesProvider } from "src/APP/Mannagement/OwnerService/Application/Service";
 import { OServiceCommandHandlerProviders } from "./Sources/Command/Handler";
 import { ModuleRef } from "@nestjs/core";
+import { OServiceQueryHandlerProviders } from "./Sources/Query/Handler";
 
 @Module({
     imports: [
@@ -20,7 +21,8 @@ import { ModuleRef } from "@nestjs/core";
     providers: [
         ...OServiceRepositoryProviders,
         ...OServiceServicesProvider,
-        ...OServiceCommandHandlerProviders
+        ...OServiceCommandHandlerProviders,
+        ...OServiceQueryHandlerProviders
     ]
 })
 export class OwnerServiceModule {
@@ -39,6 +41,7 @@ export class OwnerServiceModule {
         ]);
 
         this.query$.register([
+            ...OServiceQueryHandlerProviders
         ]);
 
         this.event$.register([]);
