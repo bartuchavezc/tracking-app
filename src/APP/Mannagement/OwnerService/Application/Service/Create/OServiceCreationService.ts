@@ -19,7 +19,9 @@ export class OServiceCrationService {
                         "Created Service",
                         {
                             name: serviceName,
-                            createdAt: new Date()
+                            meta: {
+                                createdAt: new Date()
+                            }
                         },
                         new Date() //production date
                     ));

@@ -8,7 +8,7 @@ export const OServiceMongoSchema = new Schema({
     payload: {
         name: String,
         meta: {
-            createdAt: {type: Date, default: new Date() },
+            createdAt: Date,
             updatedAt: Date,
             deletedAt: Date
         }

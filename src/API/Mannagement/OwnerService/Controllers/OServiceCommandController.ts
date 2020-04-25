@@ -5,6 +5,7 @@ import { NestOServiceCreateCommand } from "../Sources/Command/NestOServiceCrateC
 import { OServiceValidationObject } from "../Sources/Validation/OServiceValidationObject";
 import { NestOServiceCreateCommandHandler } from "../Sources/Command/Handler/NestOServiceCreateCommandHandler";
 import { NestOServiceUpdateCommand } from "../Sources/Command/NestOServiceUpdateCommand";
+import { Uuid } from "src/APP/Shared/Domain/ValueObjects/Uuid";
 
 @Controller("/services")
 export class OwnerServiceCommandController extends WebController {
@@ -22,15 +23,15 @@ export class OwnerServiceCommandController extends WebController {
 
     @Put(":id")
     update(@Param("id") id: string ,@Body() OService: OServiceValidationObject){
-        return this.updateOService(id, name);
+        return this.updateOService(id, OService.name);
     }
 
     async createOService(name){
         return await this.commandBus.execute(new NestOServiceCreateCommand(name));
     }
 
-    async updateOService(id, name){
-        return await this.commandBus.execute(new NestOServiceUpdateCommand(id, name))
+    async updateOService(id: string, name: String){
+        return await this.commandBus.execute(new NestOServiceUpdateCommand(new Uuid(id), name))
     }
 
 }

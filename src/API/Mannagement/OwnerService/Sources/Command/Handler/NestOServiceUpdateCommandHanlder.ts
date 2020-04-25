@@ -5,7 +5,7 @@ import { OServiceUpdateService } from "src/APP/Mannagement/OwnerService/Applicat
 import { OServiceUpdateCommand } from "src/APP/Mannagement/OwnerService/Application/Command/OServiceUpdateCommand";
 
 @CommandHandler(NestOServiceUpdateCommand)
-export class NestOServiceCommandHandler implements ICommandHandler<NestOServiceUpdateCommand>{
+export class NestOServiceUpdateCommandHandler implements ICommandHandler<NestOServiceUpdateCommand>{
     
     constructor(
         @Inject("OServiceUpdateService") private readonly updateService: OServiceUpdateService
