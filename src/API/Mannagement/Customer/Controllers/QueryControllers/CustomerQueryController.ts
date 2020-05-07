@@ -1,11 +1,10 @@
-import { AppConfig } from "../../../Shared/app.config";
-
 import { Controller, Get, Param } from "@nestjs/common";
 import { QueryBus } from "@nestjs/cqrs";
 import { AllCustomerQuery } from "../../Sources/Query/AllCustomerQuery";
 import { OneCustomerQuery } from "../../Sources/Query/OneCustomerQuery";
+import { webroutes } from "src/API/Mannagement/Shared/application/webroutes";
 
-@Controller(`/customer`)
+@Controller(`${webroutes.MannagementModuleRoutePrefix}/customer`)
 export class CustomerQueryController {
 
     constructor(

@@ -2,7 +2,7 @@ import { CustomerStoreRepository } from 'src/APP/Mannagement/Customer/Domain/Rep
 import { Customer } from "../../../Domain/Customer";
 import { Inject, Injectable } from "@nestjs/common";
 import { GeneratedUuid } from "src/APP/Shared/Domain/GeneratedUuid";
-import { Uuid } from "src/APP/Shared/Domain/ValueObjects/Uuid";
+import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
 import { CustomerEvent } from '../../../Infraestructure/EventStore/CustomerEvent';
 @Injectable()
 export class CustomerCreationService {

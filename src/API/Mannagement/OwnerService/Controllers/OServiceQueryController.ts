@@ -3,8 +3,9 @@ import { WebController } from "../../Shared/application/nest/WebController";
 import { QueryBus } from "@nestjs/cqrs";
 import { NestOServiceAllQuery } from "../Sources/Query/NestOServicesAllQuery";
 import { NestOServiceCriteriaQuery } from "../Sources/Query/NestOServiceCriteriaQuery";
+import { webroutes } from "../../Shared/application/webroutes";
 
-@Controller("services")
+@Controller(`${webroutes.MannagementModuleRoutePrefix}services`)
 export class OServiceQueryController extends WebController {
 
     constructor(

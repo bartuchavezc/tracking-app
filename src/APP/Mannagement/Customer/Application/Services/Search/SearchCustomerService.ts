@@ -1,6 +1,6 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { Customer } from "../../../Domain/Customer";
-import { Uuid } from "src/APP/Shared/Domain/ValueObjects/Uuid";
+import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
 import { ICustomerQueryRepository } from "../../../Domain/Repository/Query/ICustomerQueryRepository";
 
 @Injectable()

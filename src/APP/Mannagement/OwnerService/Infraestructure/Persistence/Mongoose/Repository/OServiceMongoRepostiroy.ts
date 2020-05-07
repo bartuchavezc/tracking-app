@@ -10,7 +10,6 @@ import { OServiceEvent } from "../../OServiceModel";
 export class OServiceMongoRepository implements OServiceWriteRepository {
 
     private model: Model<IOServiceMognoSchema>
-    private error: Error;
 
     constructor(
         @Inject("STORE_DB_CONNECTOR") private readonly connectorProvider: StoreConnector

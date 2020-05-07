@@ -1,6 +1,6 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { OwnerService } from "../../../Domain/OwnerService";
-import { Uuid } from "src/APP/Shared/Domain/ValueObjects/Uuid";
+import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
 import { OServiceReadRepository } from "../../../Domain/Repository/OServiceReadRepository";
 
 @Injectable()

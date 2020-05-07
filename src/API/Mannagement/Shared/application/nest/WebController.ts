@@ -1,36 +1,24 @@
-
-import { ValidationError } from 'class-validator'
 import { Res } from '@nestjs/common';
 export class WebController {
 
-  protected responseWithValidationErrors(route: string, errors: ValidationError[], @Res() response) {
-  
-    errors = this.formatErrors(errors);
-    return response.status(301).send({errors})
-  
+  protected response: { status: (arg0: number) => { (): any; new(): any; send: { (arg0: string): any; new(): any; }; s: any; }; };
+
+  protected redirectWithMessage(route: string, message: string) {
+    return this.response.status(200).send(message)
   }
 
-  protected redirectWithMessage(route: string, @Res() response, message: string){
-
-      return response.status(200).send({message})
-
+  protected responseWithMessage(message?: string) {
+    return this.response.status(404).send(message);
   }
 
-  private formatErrors(validationErrors: ValidationError[]): any[] {
+  protected resposneWithData(data: Object){
+    return this.response.status(200).send(JSON.stringify(data));
+  }
 
-    return validationErrors.map(validationError => {
-
-      const constrainstNames = Object.keys(validationError.constraints).map(constraintName => constraintName)
-      const constraintValue = validationError.constraints[constrainstNames[0]];
-
-      const value = validationError.value ? validationError.value : 'empty'
-
-      return {
-        value,
-        message: `on ${validationError.property} validationError: ${constraintValue}`
-      }
-    });
-
+  protected responseWithError(err: Error | string) {
+    return typeof (err) == 'object' ?
+      this.response.status(500).send(err.message) :
+      this.response.status(500).s
   }
 
 }

@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { MannagementModule } from './Mannagement/Mannagement.module'
 
-//Modules
-import { CustomerModule } from './Mannagement/Customer/Customer.module';
-import { MannagementModules } from './Mannagement/MannagementModules';
 @Module({
     imports: [ 
-        ...MannagementModules, 
+        MannagementModule,
         ConfigModule.forRoot({isGlobal: true}) ]
 })
 export class ServerModule {}

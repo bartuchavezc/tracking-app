@@ -3,11 +3,11 @@ import { WebController } from "../../Shared/application/nest/WebController";
 import { CommandBus } from "@nestjs/cqrs";
 import { NestOServiceCreateCommand } from "../Sources/Command/NestOServiceCrateCommand";
 import { OServiceValidationObject } from "../Sources/Validation/OServiceValidationObject";
-import { NestOServiceCreateCommandHandler } from "../Sources/Command/Handler/NestOServiceCreateCommandHandler";
 import { NestOServiceUpdateCommand } from "../Sources/Command/NestOServiceUpdateCommand";
-import { Uuid } from "src/APP/Shared/Domain/ValueObjects/Uuid";
+import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
+import { webroutes } from "../../Shared/application/webroutes";
 
-@Controller("/services")
+@Controller(`${webroutes.MannagementModuleRoutePrefix}/services`)
 export class OwnerServiceCommandController extends WebController {
 
     constructor(

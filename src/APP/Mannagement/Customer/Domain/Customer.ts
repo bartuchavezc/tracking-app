@@ -1,6 +1,6 @@
 import { AggregateRoot } from '@nestjs/cqrs'
 import { NestCustomerCreatedEvent } from 'src/API/Mannagement/Customer/Sources/Events/NestCustomerCreatedEvent';
-import { Uuid } from 'src/APP/Shared/Domain/ValueObjects/Uuid';
+import { Uuid } from 'src/APP/Shared/ValueObjects/Uuid';
 import { CustomerEvent } from '../Infraestructure/EventStore/CustomerEvent';
 import { CustomerSnapShot } from '../Infraestructure/EventStore/CustomerSnapshoot';
 

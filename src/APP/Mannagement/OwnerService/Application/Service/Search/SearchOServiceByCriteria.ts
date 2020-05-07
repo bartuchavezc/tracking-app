@@ -2,7 +2,7 @@ import { Injectable, Inject } from "@nestjs/common";
 import { OServiceReadRepository } from "../../../Domain/Repository/OServiceReadRepository";
 import { OwnerService } from "../../../Domain/OwnerService";
 import { OServiceQuery } from "../../Query/OServiceQuery";
-import { Uuid } from "src/APP/Shared/Domain/ValueObjects/Uuid";
+import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
 
 @Injectable()
 export class SearchOServiceByCriteria {

@@ -1,4 +1,4 @@
-import { Uuid } from "src/APP/Shared/Domain/ValueObjects/Uuid";
+import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
 import { AggregateRoot } from "@nestjs/cqrs";
 
 export class OwnerService extends AggregateRoot {
