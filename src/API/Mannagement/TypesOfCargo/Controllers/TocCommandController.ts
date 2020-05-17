@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res, Inject, Put, Param } from "@nestjs/common";
+import { Controller, Post, Body, Res, Inject, Put, Param, Get } from "@nestjs/common";
 import { WebController } from "../../Shared/application/nest/WebController";
 import { TocCreateValidationObject } from "../Sources/Validation/TocCreateValidationObject";
 import { CommandBus } from "@nestjs/cqrs";
@@ -29,7 +29,7 @@ export class TocComandController extends WebController {
         this.response = response;
         this.update(id, toc);
     }
-
+    
     async update(id: string, toc: TocUpdateValidationObject){
         await this.commandBus.execute(new NestTocUpdateCommand(id ,toc.cargo))
             .then(result => {

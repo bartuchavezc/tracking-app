@@ -15,11 +15,7 @@ export class SearchTocsService {
             try {
                 await this.repository.getAll()
                     .then(tocs => {
-                        if(tocs.length <=0 ){
-                            throw new Error("no have results");
-                        }
-                        
-                        resolve(tocs)
+                        resolve(tocs);
                     })
                     .catch(err => { throw err })
             } catch (error) {

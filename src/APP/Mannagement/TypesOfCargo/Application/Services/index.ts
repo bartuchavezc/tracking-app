@@ -1,6 +1,7 @@
 import { TocCreationService } from "./Create/TocCreationService";
 import { TocUpdateService } from "./Update/TocUpdateService";
 import { SearchTocsService } from "./Search/SearchTocsService";
+import { SearchTocsByCriteriaService } from "./Search/SearchTocsByCriteriaService";
 
 export const TocServicesProvider = [
     {
@@ -14,5 +15,9 @@ export const TocServicesProvider = [
     {
         provide: "SearchTocsService",
         useClass: SearchTocsService
+    },
+    {
+        provide: "SearchTocsByCriteriaService",
+        useClass: SearchTocsByCriteriaService
     }
 ]

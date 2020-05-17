@@ -23,7 +23,6 @@ export class TocMongooseRepository implements TocRepository {
             .catch(err => logger.error(err))
     }
 
-
     /**
      * 
      * @param toc Type Of Cargo Domain Object
@@ -31,25 +30,45 @@ export class TocMongooseRepository implements TocRepository {
      */
     async add(toc: TypeOfCargo, event: String): Promise<TocMongooseDocument> {
         const data = toc.toPrimitives();
-        return await this.model.create({ 
-            event, aggregateId: data.aggregateId, cargo: data.cargo, _meta: data._meta , productionDate: new Date() 
+        return await this.model.create({
+            event, aggregateId: data.aggregateId, cargo: data.cargo, _meta: data._meta, productionDate: new Date()
         })
     }
 
-    getAll(): Aggregate<TocMongooseDocument[]>{
-        return this.model.aggregate([
-            {
-                $group: {
-                    _id: "$aggregateId",
-                    payload: { $mergeObjects: {cargo: "$cargo"} },
-                    _meta: { $mergeObjects: { createdAt: "$_meta.createdAt", updatedAt: "$_meta.updatedAt", deletedAt: "$_meta.deletedAt"} }
-                }
-            },
-            {
-                $sort: {
-                    "payload.cargo": 1
-                }
+    getAll(): Promise<Aggregate<TocMongooseDocument[]>> {
+        return new Promise((resolve, reject) => {
+            try {
+                const result = this.model.aggregate([
+                    {
+                        $group: {
+                            _id: "$aggregateId",
+                            payload: { $mergeObjects: { cargo: "$cargo" } },
+                            _meta: { $mergeObjects: { createdAt: "$_meta.createdAt", updatedAt: "$_meta.updatedAt", deletedAt: "$_meta.deletedAt" } }
+                        }
+                    },
+                    {
+                        $sort: {
+                            "payload.cargo": 1
+                        }
+                    }
+                ]);
+
+                resolve(result);
+
+            } catch (error) {
+                reject(error);
             }
-        ])
+        });
+    }
+
+    getByCriteria(criteria: { aggregateId?: string; filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number }) {
+        return this.model.aggregate()
+            .match({ aggregateId: criteria.aggregateId })
+            .group({
+                _id: "$aggregateId",
+                payload: { $mergeObjects: { cargo: "$cargo" } },
+                _meta: { $mergeObjects: { createdAt: "$_meta.createdAt", updatedAt: "$_meta.updatedAt", deletedAt: "$_meta.deletedAt" } }
+            })
+            .sort({ "payload.cargo": criteria.order || 1 })
     }
 }
