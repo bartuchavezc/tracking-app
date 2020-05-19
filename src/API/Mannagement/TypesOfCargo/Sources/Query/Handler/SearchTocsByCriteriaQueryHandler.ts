@@ -1,6 +1,5 @@
 import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
 import { NestSearchTocsByCriteriaQuery } from "../NestSearchTocsByCreiteriaQuery";
-import { SearchTocsByCriteriaQuery } from "src/APP/Mannagement/TypesOfCargo/Application/Query/SearchTocsByCriteriaQuery";
 import { Inject } from "@nestjs/common";
 import { SearchTocsByCriteriaService } from "src/APP/Mannagement/TypesOfCargo/Application/Services/Search/SearchTocsByCriteriaService";
 

@@ -5,7 +5,7 @@ import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
 export class NestOServiceUpdateCommand extends OServiceUpdateCommand implements ICommand {
 
     constructor(
-        readonly id: Uuid,
+        readonly id: string,
         readonly name: String
     ){ super(); }
 

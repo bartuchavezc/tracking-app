@@ -1,24 +1,26 @@
 import { Injectable, Inject } from "@nestjs/common";
-import { OwnerService } from "../../../Domain/OwnerService";
-import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
-import { OServiceReadRepository } from "../../../Domain/Repository/OServiceReadRepository";
+import { OwnerServicerepository } from "../../../Domain/OwnerServiceRepository";
+import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
 
 @Injectable()
 export class SearchOServices {
 
     constructor(
-        @Inject("OServiceReadRepository") private readonly repository: OServiceReadRepository
+        @Inject("OwnerServiceRepository") private readonly repository: OwnerServicerepository,
+        @Inject("LoggerProvider") private readonly logger: Logger
     ) { }
 
-    async search() {
-        let services = await this.repository
-            .getAll()
-            .then(result => result)
-            .catch(err => { throw err })
-
-        return services.map(service => {
-            return new OwnerService(new Uuid(service._id), service.aggregate.payload.name);
-        } );
+    search() {
+        return new Promise(async (resolve, reject) => {
+            this.repository.getAll()
+            .then(result => {
+                resolve(result);
+            })
+            .catch(error => {
+                this.logger.error(error);
+                reject(new Error("Can't get data right now, please try latter"));
+            })
+        })
     }
 
 }

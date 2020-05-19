@@ -3,16 +3,19 @@ import { IQuery } from "@nestjs/cqrs";
 
 export class NestOServiceCriteriaQuery extends OServiceQuery implements IQuery {
 
-    setId(id: string){
-        this.id = id;
-    }
+    constructor(
+        { aggregateId, filters, orderBy, order, offset, limit }:
+            { aggregateId?: string; filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number } = {},
+    ) {
+        super();
 
-    setName(name: String){
-        this.name = name;
-    }
+        this.aggregateId = aggregateId;
+        this.filters = filters;
+        this.orderBy = orderBy;
+        this.order = order;
+        this.offset = offset;
+        this.limit = limit
 
-    setText(text: String){
-        this.text = text;
     }
 
 }

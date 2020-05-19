@@ -6,13 +6,13 @@ import { OServiceUpdateCommand } from "src/APP/Mannagement/OwnerService/Applicat
 
 @CommandHandler(NestOServiceUpdateCommand)
 export class NestOServiceUpdateCommandHandler implements ICommandHandler<NestOServiceUpdateCommand>{
-    
+
     constructor(
         @Inject("OServiceUpdateService") private readonly updateService: OServiceUpdateService
-    ){}
+    ) { }
 
-    async execute(command: OServiceUpdateCommand){
-        await this.updateService.write(command.id, command.name)
+    async execute(command: OServiceUpdateCommand) {
+        return await this.updateService.__writed(command.id, command.name, "ChangedServiceName")
     }
 
 }

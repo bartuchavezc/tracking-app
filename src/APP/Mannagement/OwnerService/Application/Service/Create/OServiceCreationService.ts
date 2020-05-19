@@ -1,33 +1,34 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { OServiceWriteRepository } from "../../../Domain/Repository/OServiceWriteRepository";
-import { OServiceEvent } from "../../../Infraestructure/Persistence/OServiceModel";
 import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
 import { GeneratedUuid } from "src/APP/Shared/Domain/GeneratedUuid";
+import { OwnerService } from "../../../Domain/OwnerService";
+import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
+import { OwnerServicerepository } from "../../../Domain/OwnerServiceRepository";
 
 @Injectable()
 export class OServiceCrationService {
 
     constructor(
-        @Inject("OServiceRepository") private readonly repository: OServiceWriteRepository
-    ){}
+        @Inject("OwnerServiceRepository") private readonly repository: OwnerServicerepository,    
+        @Inject("LoggerProvider") private readonly logger: Logger
+    ) { }
 
-    async create(serviceName: String): Promise<any>{
+    __invoke(serviceName: String, event: String): Promise<OwnerService>{
+        return this.persist(this.create(serviceName), event)
+    }
+
+    private create(serviceName: String) {
+        return new OwnerService(new Uuid(GeneratedUuid.__invoke()), serviceName, { createdAt: new Date() }
+        )
+    }
+
+    private persist(oservice: OwnerService, event: String): Promise<OwnerService> {
         return new Promise(async (resolve, reject) => {
             try {
-                const serviceCreated = await this.repository.add(
-                    new OServiceEvent(
-                        new Uuid(GeneratedUuid.__invoke()).toString(),
-                        "Created Service",
-                        {
-                            name: serviceName,
-                            meta: {
-                                createdAt: new Date()
-                            }
-                        },
-                        new Date() //production date
-                    ));
-                resolve(serviceCreated);
+                await this.repository.add(oservice, event)
+                resolve(oservice)
             } catch (error) {
+                this.logger.error(error);
                 reject(error);
             }
         })

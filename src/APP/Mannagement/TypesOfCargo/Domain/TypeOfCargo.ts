@@ -1,4 +1,3 @@
-import { AggregateRoot } from "@nestjs/cqrs";
 import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
 import { Aggregate } from "src/APP/Shared/Domain/Aggregate";
 

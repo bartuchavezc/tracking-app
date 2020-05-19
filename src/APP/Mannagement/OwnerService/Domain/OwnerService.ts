@@ -1,26 +1,30 @@
 import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
-import { AggregateRoot } from "@nestjs/cqrs";
+import { Aggregate } from "src/APP/Shared/Domain/Aggregate";
 
-export class OwnerService extends AggregateRoot {
+export class OwnerService extends Aggregate {
 
     constructor(
-        private readonly id: Uuid,
-        private readonly serviceName: String
+        aggregateId: Uuid,
+        readonly serviceName: String,
+        readonly _meta?: {
+            createdAt?: Date,
+            updatedAt?: Date,
+            deletedAt?: Date
+        }
     ){
-        super();
+        super(aggregateId);
     }
-
-    public primitives() : {id: Uuid, name: String} {
-        return { id: this.id, name: this.serviceName }
-    }
-    
 
     public created(){
-
+        console.log(this);
     }
 
-    public changed(){
-
+    public toPrimitives(){
+        return {
+            aggregateId: this.aggregateId,
+            serviceName: this.serviceName,
+            _meta: this._meta
+        }
     }
 
 }

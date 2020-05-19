@@ -8,17 +8,11 @@ import { SearchOServiceByCriteria } from "src/APP/Mannagement/OwnerService/Appli
 export class NestOServiceCriteriaQueryHandler implements IQueryHandler<NestOServiceCriteriaQuery>{
 
     constructor(
-        @Inject("OServiceSearchByCriteriaService") private readonly searchService: SearchOServiceByCriteria
-    ) { }
+        @Inject("OServiceSearchByCriteriaService") private readonly service: SearchOServiceByCriteria
+    ){}
 
     execute(query: OServiceQuery) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                await this.searchService.searchByCriteria(query).then(result => resolve(result))
-            } catch (error) {
-                reject(error);
-            }
-        })
+        return this.service.search(query.__primitives())
     }
 
 }

@@ -5,7 +5,7 @@ import { SearchTocsService } from "src/APP/Mannagement/TypesOfCargo/Application/
 import { TocsQuery } from "src/APP/Mannagement/TypesOfCargo/Application/Query/TocsQuery";
 
 @QueryHandler(NestTocsQuery)
-export class TocsQueryHandler implements IQueryHandler {
+export class TocsQueryHandler implements IQueryHandler<NestTocsQuery> {
     
     constructor(
         @Inject("SearchTocsService") private readonly service: SearchTocsService

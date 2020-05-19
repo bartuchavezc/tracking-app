@@ -1,11 +1,12 @@
-import { Controller, Get, Param, Req } from "@nestjs/common";
+import { Controller, Get, Param, Req, Res } from "@nestjs/common";
 import { WebController } from "../../Shared/application/nest/WebController";
 import { QueryBus } from "@nestjs/cqrs";
 import { NestOServiceAllQuery } from "../Sources/Query/NestOServicesAllQuery";
 import { NestOServiceCriteriaQuery } from "../Sources/Query/NestOServiceCriteriaQuery";
 import { webroutes } from "../../Shared/application/webroutes";
+import { request } from "express";
 
-@Controller(`${webroutes.MannagementModuleRoutePrefix}services`)
+@Controller(`${webroutes.MannagementModuleRoutePrefix}/services`)
 export class OServiceQueryController extends WebController {
 
     constructor(
@@ -15,33 +16,34 @@ export class OServiceQueryController extends WebController {
     }
 
     @Get()
-    __invoke() {
-        return this.searchServices();
+    __invoke(@Req() request, @Res() response) {
+        this.response = response;
+        Object.entries(request.body).length > 0
+            ? this.searchByCrteria(request.body)
+            : this.getAll();
     }
 
-    @Get(":id")
-    getByCriteria(@Param("id") id, @Req() { body }) {
-        return this.searchByCrteria(id, body);
 
+    async getAll(){
+        return this.queryBus.execute(new NestOServiceAllQuery())
+        .then(result => {
+            this.resposneWithData(result)
+        })
+        .catch(error => {
+            this.responseWithError(error)
+        })
     }
 
-    async searchByCrteria(id: string, body) {
-        const query = new NestOServiceCriteriaQuery();
-            query.setId(id)
-
-            if(body.name){
-                query.setName(body.name);   
-            }
-
-            if(body.text){
-                query.setText(body.text);
-            }
-            
-        return await this.queryBus.execute(query);
-    }
-
-    async searchServices() {
-        return await this.queryBus.execute(new NestOServiceAllQuery());
+    async searchByCrteria(
+        query: { aggregateId?: string; filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number }
+    ) {
+        return await this.queryBus.execute(new NestOServiceCriteriaQuery(query))
+        .then(result => {
+            this.resposneWithData(result);
+        })
+        .catch(error => {
+            this.responseWithError(error)
+        })
     }
 
 }

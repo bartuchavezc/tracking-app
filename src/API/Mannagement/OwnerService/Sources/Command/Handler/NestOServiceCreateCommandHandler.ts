@@ -12,7 +12,7 @@ export class NestOServiceCreateCommandHandler implements ICommandHandler<NestOSe
     ){}
 
     async execute(command: OServiceCreateCommand){
-        return await this.creationService.create(command.name);
+        return await this.creationService.__invoke(command.name, "CreatedOwnerService");
     }
 
 }

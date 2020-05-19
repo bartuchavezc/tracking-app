@@ -17,7 +17,9 @@ export class TocQueryController extends WebController {
     @Get()
     __invoke(@Req() request, @Res() response) {
         this.response = response;
-        Object.entries(request.body).length > 0 ? this.searchByCreiteria(request.body) : this.getAll();
+        Object.entries(request.body).length > 0
+            ? this.searchByCreiteria(request.body)
+            : this.getAll();
     }
 
     async searchByCreiteria(
