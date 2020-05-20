@@ -1,7 +1,7 @@
-import { AllCustomerQueryHandler } from "./AllCustomerQueryHanlder";
-import { OneCustomerQueryHandler } from "./OneCustomerQueryHandler";
+import { NestAllCustomerQueryHandler } from "./NestAllCustomerQueryHanlder";
+import { NestByCriteriaCustomerQueryHandler } from "./NestByCriteriaCustomerQueryHandler";
 
 export const CustomerQueryHandlerProviders = [
-    AllCustomerQueryHandler,
-    OneCustomerQueryHandler,
+    NestAllCustomerQueryHandler,
+    NestByCriteriaCustomerQueryHandler,
 ]

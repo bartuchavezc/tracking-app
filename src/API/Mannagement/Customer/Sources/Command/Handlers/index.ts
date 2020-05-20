@@ -1,7 +1,7 @@
-import { CustomerCreateCommandHanlder } from "./CustomerCreateCommandHandler";
-import { CustomerUpdateCommandHanlder } from "./CustomerUpdateCommandHanlder";
+import { NestCustomerCreateCommandHanlder } from "./NestCustomerCreateCommandHandler";
+import { NestCustomerUpdateCommandHanlder } from "./NestCustomerUpdateCommandHandler";
 
 export const CustomerCommandHandlerProviders = [
-    CustomerCreateCommandHanlder,
-    CustomerUpdateCommandHanlder,
+    NestCustomerCreateCommandHanlder,
+    NestCustomerUpdateCommandHanlder
 ]

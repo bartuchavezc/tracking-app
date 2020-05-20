@@ -1,43 +1,45 @@
-import { AggregateRoot } from '@nestjs/cqrs'
 import { NestCustomerCreatedEvent } from 'src/API/Mannagement/Customer/Sources/Events/NestCustomerCreatedEvent';
 import { Uuid } from 'src/APP/Shared/ValueObjects/Uuid';
-import { CustomerEvent } from '../Infraestructure/EventStore/CustomerEvent';
-import { CustomerSnapShot } from '../Infraestructure/EventStore/CustomerSnapshoot';
+import { Aggregate } from 'src/APP/Shared/Domain/Aggregate';
 
-export class Customer extends AggregateRoot {
+export class Customer extends Aggregate {
 
-    creationFailure: { error: Error, message: string };
-
-    private deletedAt: Date;
+    readonly name: String;
+    readonly contact: String;
 
     constructor(
-        readonly id: Uuid,
-        readonly name: String,
-        readonly contact: String,
-        readonly createdAt: Date
+        aggregateId: Uuid,
+        { name, contact }: { name?: String, contact?: String },
+        readonly _meta?: {
+            createdAt?: Date,
+            updatedAt?: Date,
+            deletedAt?: Date
+        }
     ) {
-        super();
+        super(aggregateId);
+
+        if (name) {
+            this.name = name;
+        }
+
+        if (contact) {
+            this.contact = contact;
+        }
+
     }
 
     public toPrimitives() {
         return {
-            id: this.id.toString(),
+            aggregateId: this.aggregateId.toString(),
             name: this.name,
-            contact: this.contact
+            contact: this.contact,
+            _meta: this._meta
         }
     }
 
     public created(customer: Customer) {
         this.apply(new NestCustomerCreatedEvent(customer));
         console.log("aplicando un nuevo evento en customer.create()");
-    }
-
-    getSnapshot(eventsList: CustomerEvent[], prevSnapshot: CustomerSnapShot){
-
-    }
-
-    public delete(): void {
-        this.deletedAt = new Date();
     }
 
 }

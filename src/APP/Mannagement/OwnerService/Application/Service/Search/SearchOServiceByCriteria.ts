@@ -16,7 +16,7 @@ export class SearchOServiceByCriteria {
             try {
                 const result = await this.repository.getByCriteria(criteria);
 
-                if(criteria.aggregateId && result.length > 0) {
+                if(criteria.aggregateId && result.length <= 0) {
                     throw new NotFoundOwnerService();
                 }
 

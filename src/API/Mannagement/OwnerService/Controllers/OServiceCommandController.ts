@@ -4,7 +4,6 @@ import { CommandBus } from "@nestjs/cqrs";
 import { NestOServiceCreateCommand } from "../Sources/Command/NestOServiceCrateCommand";
 import { OServiceValidationObject } from "../Sources/Validation/OServiceValidationObject";
 import { NestOServiceUpdateCommand } from "../Sources/Command/NestOServiceUpdateCommand";
-import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
 import { webroutes } from "../../Shared/application/webroutes";
 
 @Controller(`${webroutes.MannagementModuleRoutePrefix}/services`)

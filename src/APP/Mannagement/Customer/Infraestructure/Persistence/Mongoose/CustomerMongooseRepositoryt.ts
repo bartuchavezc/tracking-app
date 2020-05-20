@@ -1,53 +1,49 @@
-import { TocRepository } from "../../../Domain/TocRepository";
-import { Injectable, Inject, Type } from "@nestjs/common";
+import { Injectable, Inject } from "@nestjs/common";
+import { Model, Aggregate } from "mongoose";
+import { CustomerMongooseDocument } from "./CustomerMongooseDocument";
 import { StoreConnector } from "src/Databases/Eventstore/Mongoose/Connection";
 import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
-import { TocMongooseSchema } from "./TocMongooseSchema";
-import { TocMongooseDocument } from "./TocMongooseDocument";
-import { Model, Aggregate } from "mongoose";
-import { TypeOfCargo } from "../../../Domain/TypeOfCargo";
+import { CustomerMongooseSchema } from "./CustomerMongooseSchema";
+import { Customer } from "../../../Domain/Customer";
+import { CustomerRepository } from "../../../Domain/CustomerRepository";
 
 @Injectable()
-export class TocMongooseRepository implements TocRepository {
+export class CustomerMongooseRepository implements CustomerRepository {
 
-    private model: Model<TocMongooseDocument>;
+    private model: Model<CustomerMongooseDocument>
 
     constructor(
-        @Inject("STORE_DB_CONNECTOR") private readonly connectorProvider: StoreConnector,
+        @Inject("STORE_DB_CONNECTOR") private readonly connector: StoreConnector,
         @Inject("LoggerProvider") private readonly logger: Logger
     ) {
-        this.connectorProvider.getConenction()
+        this.connector.getConenction()
             .then(connection => {
-                this.model = connection.model("typeofcargo", TocMongooseSchema)
+                this.model = connection.model("customer", CustomerMongooseSchema)
             })
-            .catch(err => logger.error(err))
+            .catch(err => this.logger.error(err))
     }
 
-    async add(toc: TypeOfCargo, event: String): Promise<TocMongooseDocument> {
-        const data = toc.toPrimitives();
+    async add(customer: Customer, event: String): Promise<CustomerMongooseDocument> {
+        const data = customer.toPrimitives();
         return await this.model.create({
-            event, 
-            aggregateId: data.aggregateId, 
-            cargo: data.cargo,
-            _meta: data._meta, 
+            event,
+            aggregateId: data.aggregateId,
+            name: data.name,
+            contact: data.contact,
+            _meta: data._meta,
             productionDate: new Date()
         })
     }
 
-    getAll(): Promise<Aggregate<TocMongooseDocument[]>> {
+    getAll(): Promise<Aggregate<CustomerMongooseDocument[]>> {
         return new Promise((resolve, reject) => {
             try {
                 const result = this.model.aggregate([
                     {
                         $group: {
                             _id: "$aggregateId",
-                            payload: { $mergeObjects: { cargo: "$cargo" } },
+                            paylaod: { $mergeObjects: { name: "$name", contact: "$contact" } },
                             _meta: { $mergeObjects: { createdAt: "$_meta.createdAt", updatedAt: "$_meta.updatedAt", deletedAt: "$_meta.deletedAt" } }
-                        }
-                    },
-                    {
-                        $sort: {
-                            "payload.cargo": 1
                         }
                     }
                 ]);
@@ -65,9 +61,10 @@ export class TocMongooseRepository implements TocRepository {
             .match({ aggregateId: criteria.aggregateId })
             .group({
                 _id: "$aggregateId",
-                payload: { $mergeObjects: { cargo: "$cargo" } },
+                payload: { $mergeObjects: { name: "$name", contact: "$contact" } },
                 _meta: { $mergeObjects: { createdAt: "$_meta.createdAt", updatedAt: "$_meta.updatedAt", deletedAt: "$_meta.deletedAt" } }
             })
-            .sort({ "payload.cargo": criteria.order || 1 })
+            .sort({ "paylaod.name": criteria.order || 1 })
     }
+
 }

@@ -1,8 +1,7 @@
 import { CustomerCreationService } from "./Create/CustomerCreationService";
-import { CustomerChangeNameService } from "./Update/CustomerChangeNameService";
-import { CustomerChangeContactService } from "./Update/CustomerChangeContactService";
 import { SearchCustomersService } from "./Search/SearchCustomerService";
 import { SearchCustomerByCriteriaService } from "./Search/SearchCustomerByCriteriaService";
+import { CustomerUpdateService } from "./Update/CustomerUpdateService";
 
 export const CustomerServiceProvider = [
     {
@@ -10,19 +9,15 @@ export const CustomerServiceProvider = [
         useClass: CustomerCreationService
     },
     {
-        provide: "CustomerChangeNameService",
-        useClass: CustomerChangeNameService
-    },
-    {
-        provide: "CustomerChangeContactService",
-        useClass: CustomerChangeContactService
+        provide: "CustomerUpdateService",
+        useClass: CustomerUpdateService
     },
     {
         provide: "SearchAllCustomersService",
         useClass: SearchCustomersService
     },
     {
-        provide: "GetOneCustomerService",
+        provide: "CustomerByCriteriaSearcher",
         useClass: SearchCustomerByCriteriaService
     },
     

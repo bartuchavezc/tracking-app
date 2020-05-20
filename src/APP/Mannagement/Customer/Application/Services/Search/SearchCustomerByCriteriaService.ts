@@ -1,25 +1,39 @@
 import { Injectable, Inject } from "@nestjs/common";
-import { CustomerResponseDTO } from "../../CustomerReponseDTO";
-import { ICustomerQueryRepository } from "../../../Domain/Repository/Query/ICustomerQueryRepository";
+import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
+import { CustomerRepository } from "../../../Domain/CustomerRepository";
+import { CustomerNotFound } from "../../../Domain/CustomerNotFound";
+import { CustomerSearcherNotWork } from "../../../Domain/CustomerSearcherNotWork";
 
 
 @Injectable()
 export class SearchCustomerByCriteriaService {
 
     constructor(
-        @Inject("CustomerQueryRepository") private readonly repository: ICustomerQueryRepository
+        @Inject("CustomerRepositoryProvider") private readonly repository: CustomerRepository,
+        @Inject("LoggerProvider") private readonly logger: Logger
     ) { }
 
-    async getById(id: string) {
-        let customers = await this.repository
-            .getById(id)
-            .then(result => {
-                console.log(result);
-                return result;
-            })
-            .catch(error => {throw error})
-        
-        return new CustomerResponseDTO(customers[0].aggregateId, customers[0].aggregate.payload.name, customers[0].aggregate.payload.contact);
+    search(criteria: { aggregateId?: string; filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number }) {
+        return new Promise(async (resolve, reject) => {
+            this.repository.getByCriteria(criteria)
+                .then(result => {
+                    if (criteria.aggregateId && result.length <= 0) {
+                        throw new CustomerNotFound()
+                    }
+
+                    resolve(result);
+
+                })
+                .catch(error => {
+
+                    if (!(error instanceof CustomerNotFound)) {
+                        this.logger.error(error);
+                        reject(new CustomerSearcherNotWork())
+                    }
+
+                    reject(error)
+                })
+        });
     }
 
 }

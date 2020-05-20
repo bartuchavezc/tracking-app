@@ -25,11 +25,11 @@ export class TocUpdateService {
             try {
                 await this.repository.add(toc, "ChangedCargo")
                     .then(result => {
-                        resolve(result.aggregate);
+                        resolve(result);
                     })
             } catch (error) {
                 this.logger.error(error);
-                reject(new TocCreationFailed(error))
+                reject(new TocCreationFailed())
             }
         })
     }

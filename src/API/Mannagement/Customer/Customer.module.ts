@@ -16,11 +16,12 @@ import { CustomerControllers } from './Controllers/';
 import { CustomerServiceProvider } from 'src/APP/Mannagement/Customer/Application/Services/CustomerServiceProvider';
 
 //  Repository providers
-import { CustomerRepositoryProviders } from 'src/APP/Mannagement/Customer/Infraestructure/EventStore/Mongodb/Repository';
+import { CustomerRepositoryProvider } from 'src/APP/Mannagement/Customer/Infraestructure/Persistence/CustomerRepositoryProvider';
 
 //  Hanlder providers
 import { CustomerCommandHandlerProviders } from './Sources/Command/Handlers';
 import { CustomerQueryHandlerProviders } from './Sources/Query/Handler';
+import { LoggerProvider } from 'src/APP/Shared/Domain/Logger';
 
 @Module({
     imports: [
@@ -32,10 +33,11 @@ import { CustomerQueryHandlerProviders } from './Sources/Query/Handler';
         ...CustomerControllers
     ],
     providers: [
-        ...CustomerRepositoryProviders,
+        ...CustomerRepositoryProvider,
         ...CustomerServiceProvider ,
         ...CustomerCommandHandlerProviders,
-        ...CustomerQueryHandlerProviders
+        ...CustomerQueryHandlerProviders,
+        LoggerProvider
     ]
 })
 export class CustomerModule implements OnModuleInit {

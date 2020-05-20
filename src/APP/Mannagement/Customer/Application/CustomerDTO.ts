@@ -1,5 +1,5 @@
 export class CustomerDTO {
-    public _id: string;
-    public name: String;
-    public contact: String;
+    public agrgegateId?: string;
+    public name?: String;
+    public contact?: String;
 }

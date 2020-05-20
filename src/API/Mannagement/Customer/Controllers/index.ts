@@ -1,4 +1,4 @@
-import { CustomerCommandController } from './CommandControllers/CustomerCommandController';
-import { CustomerQueryController } from './QueryControllers/CustomerQueryController';
+import { CustomerCommandController } from "./CustomerCommandController";
+import { CustomerQueryController } from "./CustomerQueryController";
 
 export const CustomerControllers = [ CustomerCommandController, CustomerQueryController ];
