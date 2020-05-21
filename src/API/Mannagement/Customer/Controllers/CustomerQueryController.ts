@@ -4,6 +4,7 @@ import { QueryBus } from "@nestjs/cqrs";
 import { webroutes } from "../../Shared/application/webroutes";
 import { NestByCriteriaCustomerQuery } from "../Sources/Query/NestByCriteriaCustomerQuery";
 import { NestAllCustomerQuery } from "../Sources/Query/NestAllCustomerQuery";
+import { NestOneCustomerQuery } from "../Sources/Query/NestOneCustomerQuery";
 
 @Controller(`${webroutes.MannagementModuleRoutePrefix}/customer`)
 export class CustomerQueryController extends WebController {
@@ -15,15 +16,20 @@ export class CustomerQueryController extends WebController {
     }
 
     @Get()
-    __invoke(@Req() request, @Res() response) {
+    getAll(@Req() request, @Res() response) {
         this.response = response;
         Object.entries(request.body).length > 0
-            ? this.searchByCrteria(request.body)
-            : this.getAll();
+            ? this._searchByCrteria(request.body)
+            : this._getAll();
     }
 
+    @Get(":id")
+    getOne(@Param("id") aggregateId: string, @Res() response) {
+        this.response = response;
+        this._getOne(aggregateId)
+    }
 
-    async getAll() {
+    private async _getAll() {
         return this.queryBus.execute(new NestAllCustomerQuery())
             .then(result => {
                 this.resposneWithData(result)
@@ -33,8 +39,18 @@ export class CustomerQueryController extends WebController {
             })
     }
 
-    async searchByCrteria(
-        query: { aggregateId?: string; filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number }
+    private async _getOne(aggregateId: string) {
+        return await this.queryBus.execute(new NestOneCustomerQuery(aggregateId))
+            .then(result => {
+                this.resposneWithData(result);
+            })
+            .catch(error => {
+                this.responseWithError(error);
+            })
+    }
+
+    private async _searchByCrteria(
+        query: { filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number }
     ) {
         return await this.queryBus.execute(new NestByCriteriaCustomerQuery(query))
             .then(result => {

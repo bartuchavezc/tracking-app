@@ -1,6 +1,5 @@
 export class SearchTocsByCriteriaQuery {
 
-    aggregateId;
     orderBy;
     order;
     offset;
@@ -8,7 +7,6 @@ export class SearchTocsByCriteriaQuery {
 
     public __primitives(){
         return {
-            aggregateId: this.aggregateId,
             orderBy: this.orderBy,
             order: this.order,
             offset: this.offset,

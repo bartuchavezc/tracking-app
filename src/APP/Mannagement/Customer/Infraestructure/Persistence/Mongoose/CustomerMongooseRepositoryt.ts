@@ -23,6 +23,16 @@ export class CustomerMongooseRepository implements CustomerRepository {
             .catch(err => this.logger.error(err))
     }
 
+    async getById(aggregateId: string) {
+        return await this.model.aggregate()
+            .match({ aggregateId })
+            .group({
+                _id: "$aggregateId",
+                payload: { $mergeObjects: { name: "$name", contact: "$contact" } },
+                _meta: { $mergeObjects: { createdAt: "$_meta.createdAt", updatedAt: "$_meta.updatedAt", deletedAt: "$_meta.deletedAt" } }
+            })
+    }
+
     async add(customer: Customer, event: String): Promise<CustomerMongooseDocument> {
         const data = customer.toPrimitives();
         return await this.model.create({
@@ -56,9 +66,8 @@ export class CustomerMongooseRepository implements CustomerRepository {
         });
     }
 
-    getByCriteria(criteria: { aggregateId?: string; filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number }) {
+    getByCriteria(criteria: { filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number }) {
         return this.model.aggregate()
-            .match({ aggregateId: criteria.aggregateId })
             .group({
                 _id: "$aggregateId",
                 payload: { $mergeObjects: { name: "$name", contact: "$contact" } },

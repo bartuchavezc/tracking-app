@@ -2,6 +2,7 @@ import { CustomerCreationService } from "./Create/CustomerCreationService";
 import { SearchCustomersService } from "./Search/SearchCustomerService";
 import { SearchCustomerByCriteriaService } from "./Search/SearchCustomerByCriteriaService";
 import { CustomerUpdateService } from "./Update/CustomerUpdateService";
+import { SearchOneCustomer } from "./Search/SearchOneCustomer";
 
 export const CustomerServiceProvider = [
     {
@@ -20,5 +21,9 @@ export const CustomerServiceProvider = [
         provide: "CustomerByCriteriaSearcher",
         useClass: SearchCustomerByCriteriaService
     },
+    {
+        provide: "OneCustomerSearch",
+        useClass: SearchOneCustomer
+    }
     
 ]

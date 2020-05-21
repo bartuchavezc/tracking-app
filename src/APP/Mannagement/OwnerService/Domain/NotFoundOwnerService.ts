@@ -5,8 +5,8 @@ export class NotFoundOwnerService extends NotFoundException {
      * 
      * @param error dispacher exception error
      */
-    constructor(){
-        super(`Owner Service NotFound`);
+    constructor(error?: String | Error){
+        super(`Owner Service NotFound \n ${error}`);
     }
 
 }

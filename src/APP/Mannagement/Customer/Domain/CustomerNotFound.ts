@@ -3,7 +3,7 @@ import { NotFoundException } from "src/APP/Shared/Domain/Exception/NotFoundExcep
 export class CustomerNotFound extends NotFoundException {
 
     constructor(error?: string){
-        super("Customer Not Found");
+        super(`Customer Not Found \n ${error}` );
     }
 
 }

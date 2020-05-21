@@ -22,7 +22,7 @@ export class TocMongooseRepository implements TocRepository {
             })
             .catch(err => logger.error(err))
     }
-
+    
     async add(toc: TypeOfCargo, event: String): Promise<TocMongooseDocument> {
         const data = toc.toPrimitives();
         return await this.model.create({
@@ -33,7 +33,17 @@ export class TocMongooseRepository implements TocRepository {
             productionDate: new Date()
         })
     }
-
+    
+    async getOne(aggregateId: any) {
+        return await this.model.aggregate()
+            .match({ aggregateId })
+            .group({
+                _id: "$aggregateId",
+                payload: { $mergeObjects: { cargo: "$cargo" } },
+                _meta: { $mergeObjects: { createdAt: "$_meta.createdAt", updatedAt: "$_meta.updatedAt", deletedAt: "$_meta.deletedAt" } }
+            })
+    }
+    
     getAll(): Promise<Aggregate<TocMongooseDocument[]>> {
         return new Promise((resolve, reject) => {
             try {
@@ -60,9 +70,8 @@ export class TocMongooseRepository implements TocRepository {
         });
     }
 
-    getByCriteria(criteria: { aggregateId?: string; filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number }) {
+    getByCriteria(criteria: { filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number }) {
         return this.model.aggregate()
-            .match({ aggregateId: criteria.aggregateId })
             .group({
                 _id: "$aggregateId",
                 payload: { $mergeObjects: { cargo: "$cargo" } },

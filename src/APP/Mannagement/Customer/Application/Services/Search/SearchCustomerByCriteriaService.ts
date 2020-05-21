@@ -13,25 +13,14 @@ export class SearchCustomerByCriteriaService {
         @Inject("LoggerProvider") private readonly logger: Logger
     ) { }
 
-    search(criteria: { aggregateId?: string; filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number }) {
+    search(criteria: { filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number }) {
         return new Promise(async (resolve, reject) => {
             this.repository.getByCriteria(criteria)
                 .then(result => {
-                    if (criteria.aggregateId && result.length <= 0) {
-                        throw new CustomerNotFound()
-                    }
-
                     resolve(result);
-
                 })
                 .catch(error => {
-
-                    if (!(error instanceof CustomerNotFound)) {
-                        this.logger.error(error);
-                        reject(new CustomerSearcherNotWork())
-                    }
-
-                    reject(error)
+                    reject(new CustomerSearcherNotWork());
                 })
         });
     }

@@ -5,6 +5,7 @@ import { NestOServiceAllQuery } from "../Sources/Query/NestOServicesAllQuery";
 import { NestOServiceCriteriaQuery } from "../Sources/Query/NestOServiceCriteriaQuery";
 import { webroutes } from "../../Shared/application/webroutes";
 import { request } from "express";
+import { NestOneOServiceQuery } from "../Sources/Query/NestOneOServiceQuery";
 
 @Controller(`${webroutes.MannagementModuleRoutePrefix}/services`)
 export class OServiceQueryController extends WebController {
@@ -16,34 +17,49 @@ export class OServiceQueryController extends WebController {
     }
 
     @Get()
-    __invoke(@Req() request, @Res() response) {
+    getAll(@Req() request, @Res() response) {
         this.response = response;
         Object.entries(request.body).length > 0
-            ? this.searchByCrteria(request.body)
-            : this.getAll();
+            ? this._searchByCrteria(request.body)
+            : this._getAll();
     }
 
+    @Get(":id")
+    getOne(@Param("id") aggregateId: string, @Res() response) {
+        this.response = response;
+        this._getOne(aggregateId)
+    }
 
-    async getAll(){
+    private async _getAll() {
         return this.queryBus.execute(new NestOServiceAllQuery())
-        .then(result => {
-            this.resposneWithData(result)
-        })
-        .catch(error => {
-            this.responseWithError(error)
-        })
+            .then(result => {
+                this.resposneWithData(result)
+            })
+            .catch(error => {
+                this.responseWithError(error)
+            })
     }
 
-    async searchByCrteria(
-        query: { aggregateId?: string; filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number }
+    private async _getOne(aggregateId: string) {
+        return await this.queryBus.execute(new NestOneOServiceQuery(aggregateId))
+            .then(result => {
+                this.resposneWithData(result);
+            })
+            .catch(error =>{
+                this.responseWithError(error);
+            })
+    }
+
+    private async _searchByCrteria(
+        query: { filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number }
     ) {
         return await this.queryBus.execute(new NestOServiceCriteriaQuery(query))
-        .then(result => {
-            this.resposneWithData(result);
-        })
-        .catch(error => {
-            this.responseWithError(error)
-        })
+            .then(result => {
+                this.resposneWithData(result);
+            })
+            .catch(error => {
+                this.responseWithError(error)
+            })
     }
 
 }

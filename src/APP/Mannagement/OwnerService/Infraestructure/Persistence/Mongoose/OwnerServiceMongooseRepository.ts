@@ -4,7 +4,7 @@ import { StoreConnector } from "src/Databases/Eventstore/Mongoose/Connection";
 import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
 import { OwnerService } from "../../../Domain/OwnerService";
 import { OwnerServiceMongooseDocument } from "./OwnerServiceMongooseDocument";
-import { Model, Aggregate } from "mongoose";
+import { Model } from "mongoose";
 import { OwnerServiceMongooseSchema } from "./OwnerServiceMongooseSchema";
 
 @Injectable()
@@ -32,6 +32,16 @@ export class OwnerServiceMongooseRepository implements OwnerServicerepository {
             _meta: data._meta,
             productionDate: new Date()
         });
+    }
+
+    async getOne(aggregateId: string) {
+        return await this.model.aggregate()
+            .match({ aggregateId })
+            .group({
+                _id: "$aggregateId",
+                payload: { $mergeObjects: { serviceName: "$serviceName" } },
+                _meta: { $mergeObjects: { createdAt: "$_meta.createdAt", updatedAt: "$_meta.updatedAt", deletedAt: "$_meta.deletedAt" } }
+            })
     }
 
     getAll(): Promise<any[]> {

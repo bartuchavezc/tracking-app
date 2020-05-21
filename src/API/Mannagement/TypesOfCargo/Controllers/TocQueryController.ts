@@ -4,6 +4,7 @@ import { webroutes } from "../../Shared/application/webroutes";
 import { QueryBus } from "@nestjs/cqrs";
 import { NestTocsQuery } from "../Sources/Query/NestTocsQuery";
 import { NestSearchTocsByCriteriaQuery } from "../Sources/Query/NestSearchTocsByCreiteriaQuery";
+import { NestSearchOneTypeOfCargoQuery } from "../Sources/Query/NestSearchOneTypeOfCargoQuery";
 
 @Controller(`${webroutes.MannagementModuleRoutePrefix}/type-of-cargo`)
 export class TocQueryController extends WebController {
@@ -15,33 +16,37 @@ export class TocQueryController extends WebController {
     }
 
     @Get()
-    __invoke(@Req() request, @Res() response) {
+    getAll(@Req() request, @Res() response) {
         this.response = response;
         Object.entries(request.body).length > 0
-            ? this.searchByCreiteria(request.body)
-            : this.getAll();
+            ? this._searchByCreiteria(request.body)
+            : this._getAll();
     }
 
-    async searchByCreiteria(
-        query: { aggregateId?: string; filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number }
+    @Get(":id")
+    getOne(@Param("id") aggregateId: string, @Res() response){
+        this.response = response;
+        this._getOne(aggregateId);
+    }
+
+    private async _searchByCreiteria(
+        query: { filters?: []; orderBy?: String; order?: String; offset?: Number, limit?: Number }
     ) {
         return await this.queryBus.execute(new NestSearchTocsByCriteriaQuery(query))
-            .then(result => {
-                this.resposneWithData(result);
-            })
-            .catch(err => {
-                this.responseWithError(err);
-            })
+            .then(result => this.resposneWithData(result))
+            .catch(err => this.responseWithError(err))
     }
 
-    async getAll() {
+    private async _getOne(aggregateId: string) {
+        return this.queryBus.execute(new NestSearchOneTypeOfCargoQuery(aggregateId))
+            .then(result => this.resposneWithData(result))
+            .catch(error => this.responseWithError(error))
+    }
 
-        return this.queryBus.execute(new NestTocsQuery())
-            .then(result => {
-                this.resposneWithData(result);
-            }).catch(err => {
-                this.responseWithError(err);
-            })
+    private async _getAll() {
+        return await this.queryBus.execute(new NestTocsQuery())
+            .then(result => this.resposneWithData(result))
+            .catch(err => this.responseWithError(err))
     }
 
 }

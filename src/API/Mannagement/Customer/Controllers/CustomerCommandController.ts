@@ -23,9 +23,9 @@ export class CustomerCommandController extends WebController {
     }
 
     @Put(":id")
-    update(@Param("id") aggregateId: string, @Body() customer: UpdateCustomerValidationObject, @Res() response) {
+    update(@Param("id") aggregateId: string, @Body() { name, contact }: { name?: String, contact?: String }, @Res() response) {
         this.response = response;
-        this._update(aggregateId, { name: customer.name, contact: customer.contact });
+        this._update(aggregateId, { name, contact }); 
     }
 
     private async _create(name: String, contact: String) {

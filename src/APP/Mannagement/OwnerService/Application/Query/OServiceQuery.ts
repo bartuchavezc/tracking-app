@@ -1,5 +1,4 @@
 export class OServiceQuery {
-    aggregateId;
     filters;
     orderBy;
     order;
@@ -8,7 +7,6 @@ export class OServiceQuery {
 
     public __primitives() {
         return {
-            aggregateId: this.aggregateId,
             filters: this.filters,
             orderBy: this.orderBy,
             order: this.order,
