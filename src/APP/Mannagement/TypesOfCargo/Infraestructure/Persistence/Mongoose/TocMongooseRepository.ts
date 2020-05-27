@@ -1,7 +1,7 @@
 import { TocRepository } from "../../../Domain/TocRepository";
 import { Injectable, Inject, Type } from "@nestjs/common";
 import { StoreConnector } from "src/Databases/Eventstore/Mongoose/Connection";
-import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
+import { Logger } from "src/APP/Shared/Logger/Logger";
 import { TocMongooseSchema } from "./TocMongooseSchema";
 import { TocMongooseDocument } from "./TocMongooseDocument";
 import { Model, Aggregate } from "mongoose";

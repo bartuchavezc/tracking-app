@@ -1,5 +1,5 @@
 import { IsUUID, validate, ValidationError } from "class-validator";
-import { DoesNotUuidException } from "../Domain/Exception/DoesNotUuidException";
+import { NotUuid } from "../Domain/Exception/NotUuid";
 
 export class Uuid {
 
@@ -12,7 +12,7 @@ export class Uuid {
         this.ensureIsValidUuid()
             .then(validationErrors => {
                 if (validationErrors.length) {
-                    validationErrors.map(error => { throw new DoesNotUuidException(error) })
+                    validationErrors.map(error => { throw new NotUuid(this.value) })
                 }
             })
             .catch(error => { console.error(error) })

@@ -1,6 +1,6 @@
 import { Inject } from "@nestjs/common";
 import { TocRepository } from "../../../Domain/TocRepository";
-import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
+import { Logger } from "src/APP/Shared/Logger/Logger";
 import { TypeOfCargo } from "../../../Domain/TypeOfCargo";
 import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
 import { TocCreationFailed } from "../../../Domain/TocCreationFailed";

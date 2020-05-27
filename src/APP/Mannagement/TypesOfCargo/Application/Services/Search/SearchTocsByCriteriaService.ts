@@ -1,6 +1,6 @@
 import { Inject } from "@nestjs/common";
 import { TocRepository } from "../../../Domain/TocRepository";
-import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
+import { Logger } from "src/APP/Shared/Logger/Logger";
 import { TocNotFound } from "../../../Domain/TocNotFound";
 
 export class SearchTocsByCriteriaService {

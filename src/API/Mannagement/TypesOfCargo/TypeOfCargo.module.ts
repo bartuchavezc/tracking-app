@@ -7,7 +7,7 @@ import { TocServicesProvider } from "src/APP/Mannagement/TypesOfCargo/Applicatio
 import { TocCommandHandlersProvider } from "./Sources/Command/Hanlder";
 import { TocRepositoryProvider } from "src/APP/Mannagement/TypesOfCargo/Infraestructure/Persistence/TocRepositoryProvider";
 import { ModuleRef } from "@nestjs/core";
-import { LoggerProvider } from "src/APP/Shared/Domain/Logger";
+import { LoggerProvider } from "src/APP/Shared/Logger";
 import { TocQueryHandlerProviders } from "./Sources/Query/Handler";
 
 @Module({

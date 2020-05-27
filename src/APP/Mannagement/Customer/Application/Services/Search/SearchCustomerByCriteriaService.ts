@@ -1,7 +1,6 @@
 import { Injectable, Inject } from "@nestjs/common";
-import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
+import { Logger } from "src/APP/Shared/Logger/Logger";
 import { CustomerRepository } from "../../../Domain/CustomerRepository";
-import { CustomerNotFound } from "../../../Domain/CustomerNotFound";
 import { CustomerSearcherNotWork } from "../../../Domain/CustomerSearcherNotWork";
 
 

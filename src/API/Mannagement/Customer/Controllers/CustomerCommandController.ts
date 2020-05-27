@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Put, Param, Res } from "@nestjs/common";
+import { Controller, Post, Body, Put, Param, Res, Inject } from "@nestjs/common";
 import { WebController } from "../../Shared/application/nest/WebController";
 import { CommandBus } from "@nestjs/cqrs";
 import { webroutes } from "../../Shared/application/webroutes";
@@ -6,11 +6,13 @@ import { CreateCustomerValidationObject } from "../Sources/Validation/CreateCust
 import { NestCustomerCreateCommand } from "../Sources/Command/NestCustomerCreateCommand";
 import { NestCustomerUpdateCommand } from "../Sources/Command/NestCustomerUpdateCommand";
 import { UpdateCustomerValidationObject } from "../Sources/Validation/UpdateCustomerValidationObject";
+import { ValidationService } from "src/APP/Shared/Validator/Service/ValidationService";
 
 @Controller(`${webroutes.MannagementModuleRoutePrefix}/customer`)
 export class CustomerCommandController extends WebController {
 
     constructor(
+        @Inject("ValidationService") private readonly validation: ValidationService,
         private commandBus: CommandBus
     ) {
         super();
@@ -25,7 +27,9 @@ export class CustomerCommandController extends WebController {
     @Put(":id")
     update(@Param("id") aggregateId: string, @Body() { name, contact }: { name?: String, contact?: String }, @Res() response) {
         this.response = response;
-        this._update(aggregateId, { name, contact }); 
+        this.validation.isEmail(contact)
+            .then(() => this._update(aggregateId, { name, contact }))
+            .catch(error => this.response400(error))
     }
 
     private async _create(name: String, contact: String) {

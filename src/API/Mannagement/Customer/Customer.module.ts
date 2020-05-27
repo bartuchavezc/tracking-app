@@ -21,7 +21,9 @@ import { CustomerRepositoryProvider } from 'src/APP/Mannagement/Customer/Infraes
 //  Hanlder providers
 import { CustomerCommandHandlerProviders } from './Sources/Command/Handlers';
 import { CustomerQueryHandlerProviders } from './Sources/Query/Handler';
-import { LoggerProvider } from 'src/APP/Shared/Domain/Logger';
+import { LoggerProvider } from 'src/APP/Shared/Logger';
+import { ValidationServiceProvider } from 'src/APP/Shared/Validator/Service/ValidationServiceProvider';
+import { ValidatorProviders } from 'src/APP/Shared/Validator/Domain/ValidatorProviders';
 
 @Module({
     imports: [
@@ -34,9 +36,11 @@ import { LoggerProvider } from 'src/APP/Shared/Domain/Logger';
     ],
     providers: [
         ...CustomerRepositoryProvider,
-        ...CustomerServiceProvider ,
+        ...CustomerServiceProvider,
         ...CustomerCommandHandlerProviders,
         ...CustomerQueryHandlerProviders,
+        ...ValidatorProviders,
+        ...ValidationServiceProvider,
         LoggerProvider
     ]
 })
@@ -49,8 +53,8 @@ export class CustomerModule implements OnModuleInit {
         private readonly event$: EventBus
     ) { }
 
-    async onModuleInit(){
-        
+    async onModuleInit() {
+
         this.command$.register([
             ...CustomerCommandHandlerProviders
         ]);
@@ -58,7 +62,7 @@ export class CustomerModule implements OnModuleInit {
         this.query$.register([
             ...CustomerQueryHandlerProviders
         ]);
-        
+
         this.event$.register([]);
     }
 

@@ -1,6 +1,6 @@
 import { Inject } from "@nestjs/common";
 import { CustomerRepository } from "../../../Domain/CustomerRepository";
-import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
+import { Logger } from "src/APP/Shared/Logger/Logger";
 import { Customer } from "../../../Domain/Customer";
 import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
 import { CustomerCreationFailed } from "../../../Domain/CustomerCreationFailed";

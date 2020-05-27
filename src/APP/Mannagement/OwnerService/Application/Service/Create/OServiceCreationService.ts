@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
 import { GeneratedUuid } from "src/APP/Shared/Domain/GeneratedUuid";
 import { OwnerService } from "../../../Domain/OwnerService";
-import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
+import { Logger } from "src/APP/Shared/Logger/Logger";
 import { OwnerServicerepository } from "../../../Domain/OwnerServiceRepository";
 
 @Injectable()

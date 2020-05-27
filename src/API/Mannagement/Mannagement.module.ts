@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { MannagementModules } from "./MannagementModules";
-import { LoggerProvider } from "src/APP/Shared/Domain/Logger";
+import { LoggerProvider } from "src/APP/Shared/Logger";
 
 @Module({
     imports: [

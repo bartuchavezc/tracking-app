@@ -25,11 +25,15 @@ export class WebController {
 
   }
 
-  private response404(err: Error) {
+  public response400(err: Error){
+    return this.response.status(400).send(JSON.stringify(err))
+  }
+
+  public response404(err: Error) {
     return this.response.status(404).send(JSON.stringify(err));
   }
 
-  private response500(err: Error | string) {
+  public response500(err: Error | string) {
     return typeof (err) == 'object' ? this.response.status(500).send(err.message) : this.response.status(500).send(err)
   }
 

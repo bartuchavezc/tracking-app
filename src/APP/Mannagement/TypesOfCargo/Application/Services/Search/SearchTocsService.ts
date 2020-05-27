@@ -1,6 +1,6 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { TocRepository } from "../../../Domain/TocRepository";
-import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
+import { Logger } from "src/APP/Shared/Logger/Logger";
 
 @Injectable()
 export class SearchTocsService {

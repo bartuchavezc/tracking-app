@@ -3,7 +3,7 @@ import { TocRepository } from "../../../Domain/TocRepository";
 import { TypeOfCargo } from "../../../Domain/TypeOfCargo";
 import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
 import { GeneratedUuid } from "src/APP/Shared/Domain/GeneratedUuid";
-import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
+import { Logger } from "src/APP/Shared/Logger/Logger";
 import { TocCreationFailed } from "../../../Domain/TocCreationFailed";
 
 export class TocCreationService {

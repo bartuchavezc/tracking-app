@@ -4,7 +4,7 @@ import { GeneratedUuid } from "src/APP/Shared/Domain/GeneratedUuid";
 import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
 import { CustomerRepository } from '../../../Domain/CustomerRepository';
 import { CustomerCreationFailed } from "../../../Domain/CustomerCreationFailed";
-import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
+import { Logger } from "src/APP/Shared/Logger/Logger";
 @Injectable()
 export class CustomerCreationService {
 

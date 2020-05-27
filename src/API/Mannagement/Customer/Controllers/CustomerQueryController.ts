@@ -1,15 +1,18 @@
-import { Controller, Get, Param, Req, Res } from "@nestjs/common";
+import { Controller, Get, Param, Req, Res, Inject } from "@nestjs/common";
 import { WebController } from "../../Shared/application/nest/WebController";
 import { QueryBus } from "@nestjs/cqrs";
 import { webroutes } from "../../Shared/application/webroutes";
 import { NestByCriteriaCustomerQuery } from "../Sources/Query/NestByCriteriaCustomerQuery";
 import { NestAllCustomerQuery } from "../Sources/Query/NestAllCustomerQuery";
 import { NestOneCustomerQuery } from "../Sources/Query/NestOneCustomerQuery";
+import { validate, ValidateIf } from "class-validator";
+import { ValidationService } from "src/APP/Shared/Validator/Service/ValidationService";
 
 @Controller(`${webroutes.MannagementModuleRoutePrefix}/customer`)
 export class CustomerQueryController extends WebController {
 
     constructor(
+        @Inject("ValidationService") private readonly validation: ValidationService,
         private queryBus: QueryBus
     ) {
         super();
@@ -24,9 +27,14 @@ export class CustomerQueryController extends WebController {
     }
 
     @Get(":id")
-    getOne(@Param("id") aggregateId: string, @Res() response) {
+    async getOne(@Param("id") aggregateId: string, @Res() response) {
         this.response = response;
-        this._getOne(aggregateId)
+        this.validation.isUuid(aggregateId)
+            .then(result => {
+                this._getOne(aggregateId)
+            }).catch(error => {
+                this.responseWithError(error)
+            })
     }
 
     private async _getAll() {

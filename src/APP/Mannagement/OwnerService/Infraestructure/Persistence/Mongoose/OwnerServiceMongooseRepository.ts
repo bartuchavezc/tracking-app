@@ -1,7 +1,7 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { OwnerServicerepository } from "../../../Domain/OwnerServiceRepository";
 import { StoreConnector } from "src/Databases/Eventstore/Mongoose/Connection";
-import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
+import { Logger } from "src/APP/Shared/Logger/Logger";
 import { OwnerService } from "../../../Domain/OwnerService";
 import { OwnerServiceMongooseDocument } from "./OwnerServiceMongooseDocument";
 import { Model } from "mongoose";

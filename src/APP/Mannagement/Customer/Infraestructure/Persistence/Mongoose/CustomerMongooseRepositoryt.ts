@@ -2,7 +2,7 @@ import { Injectable, Inject } from "@nestjs/common";
 import { Model, Aggregate } from "mongoose";
 import { CustomerMongooseDocument } from "./CustomerMongooseDocument";
 import { StoreConnector } from "src/Databases/Eventstore/Mongoose/Connection";
-import { Logger } from "src/APP/Shared/Domain/Logger/Logger";
+import { Logger } from "src/APP/Shared/Logger/Logger";
 import { CustomerMongooseSchema } from "./CustomerMongooseSchema";
 import { Customer } from "../../../Domain/Customer";
 import { CustomerRepository } from "../../../Domain/CustomerRepository";
