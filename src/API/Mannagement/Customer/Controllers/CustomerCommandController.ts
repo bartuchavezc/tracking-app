@@ -5,7 +5,6 @@ import { webroutes } from "../../Shared/application/webroutes";
 import { CreateCustomerValidationObject } from "../Sources/Validation/CreateCustomerValidationObject";
 import { NestCustomerCreateCommand } from "../Sources/Command/NestCustomerCreateCommand";
 import { NestCustomerUpdateCommand } from "../Sources/Command/NestCustomerUpdateCommand";
-import { UpdateCustomerValidationObject } from "../Sources/Validation/UpdateCustomerValidationObject";
 import { ValidationService } from "src/APP/Shared/Validator/Service/ValidationService";
 
 @Controller(`${webroutes.MannagementModuleRoutePrefix}/customer`)
@@ -19,17 +18,21 @@ export class CustomerCommandController extends WebController {
     }
 
     @Post()
-    create(@Body() customer: CreateCustomerValidationObject, @Res() response) {
+    async create(@Body() customer: CreateCustomerValidationObject, @Res() response) {
         this.response = response;
-        this._create(customer.name, customer.contact);
+        await this._create(customer.name, customer.contact)
     }
 
     @Put(":id")
-    update(@Param("id") aggregateId: string, @Body() { name, contact }: { name?: String, contact?: String }, @Res() response) {
+    async update(@Param("id") aggregateId: string, @Body() { name, contact }: { name?: String, contact?: String }, @Res() response) {
         this.response = response;
-        this.validation.isEmail(contact)
-            .then(() => this._update(aggregateId, { name, contact }))
-            .catch(error => this.response400(error))
+        await this.validateRequest({ aggregateId, contact })
+            .then(result => {
+                console.log(result.length)
+                result.length > 0
+                    ? this.response400(new Error(JSON.stringify(result)))
+                    : this._update(aggregateId, { name, contact })
+            })
     }
 
     private async _create(name: String, contact: String) {
@@ -50,6 +53,14 @@ export class CustomerCommandController extends WebController {
             .catch(error => {
                 this.responseWithError(error)
             })
+    }
+
+    private async validateRequest({ aggregateId, name, contact }: { aggregateId?: string, name?: String, contact?: String }) {
+        const constraint = new Array();
+        if (aggregateId) await this.validation.isUuid(aggregateId).catch(error => constraint.push({ aggregateId: error.message }));
+        if (contact) await this.validation.isEmail(contact).catch(error => constraint.push({ contact: error.message }));
+        
+        return constraint
     }
 
 }

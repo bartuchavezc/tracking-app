@@ -26,7 +26,7 @@ export class WebController {
   }
 
   public response400(err: Error){
-    return this.response.status(400).send(JSON.stringify(err))
+    return this.response.status(400).send(err.message)
   }
 
   public response404(err: Error) {

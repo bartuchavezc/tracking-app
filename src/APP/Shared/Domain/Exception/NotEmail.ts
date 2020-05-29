@@ -1,7 +1,7 @@
 export class NotEmail extends Error {
     
     constructor(value?: String){
-        super(`${value} is not an email`);
+        super(`${value} isn't a valid email`);
     }
 
 }
