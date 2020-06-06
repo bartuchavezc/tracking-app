@@ -1,33 +1,38 @@
-import { Controller, Post, Body, Put, Param, Res } from "@nestjs/common";
+import { Controller, Post, Body, Put, Param, Res, Inject } from "@nestjs/common";
 import { WebController } from "../../Shared/application/nest/WebController";
 import { CommandBus } from "@nestjs/cqrs";
 import { NestOServiceCreateCommand } from "../Sources/Command/NestOServiceCrateCommand";
-import { OServiceValidationObject } from "../Sources/Validation/OServiceValidationObject";
 import { NestOServiceUpdateCommand } from "../Sources/Command/NestOServiceUpdateCommand";
 import { webroutes } from "../../Shared/application/webroutes";
+import { ValidationErrorList } from "src/APP/Shared/Validator/Domain/ValidationErrorList";
+import { ValidationService } from "src/APP/Shared/Validator/Service/ValidationService";
 
-@Controller(`${webroutes.MannagementModuleRoutePrefix}/services`)
+@Controller(`${webroutes.MannagementModuleRoutePrefix}/owner-service`)
 export class OwnerServiceCommandController extends WebController {
 
     constructor(
+        @Inject("ValidationService") private readonly validation: ValidationService,
         private commandBus: CommandBus
     ) {
         super();
     }
 
     @Post()
-    create(@Body() OService: OServiceValidationObject, @Res() response) {
+    async create(@Body() { serviceName }: { serviceName: String }, @Res() response) {
         this.response = response;
-        this.createOService(OService.name);
+        await this.validateRequest({ serviceName })
+            .then(result => result.length > 0 ? this.response400(`ValidationErros: ${JSON.stringify(result)}`) : this._create(serviceName))
     }
 
     @Put(":id")
-    update(@Param("id") aggregateId: string, @Body() OService: OServiceValidationObject, @Res() response) {
+    async update(@Param("id") aggregateId: string, serviceName: String, @Res() response) {
         this.response = response;
-        this.updateOService(aggregateId, OService.name);
+        await this.validateRequest({ aggregateId, serviceName })
+            .then(result => result.length > 0 ? this.response400(`ValidationErros: ${JSON.stringify(result)}`) : this._update(aggregateId, serviceName))
+
     }
 
-    async createOService(serviceName) {
+    private async _create(serviceName) {
         await this.commandBus.execute(new NestOServiceCreateCommand(serviceName))
             .then(result => {
                 this.resposneWithData(result);
@@ -37,7 +42,7 @@ export class OwnerServiceCommandController extends WebController {
             })
     }
 
-    async updateOService(aggregateId: string, serviceName: String) {
+    private async _update(aggregateId: string, serviceName: String) {
         await this.commandBus.execute(new NestOServiceUpdateCommand(aggregateId, serviceName))
             .then(result => {
                 this.resposneWithData(result);
@@ -45,6 +50,17 @@ export class OwnerServiceCommandController extends WebController {
             .catch(error => {
                 this.responseWithError(error)
             })
+    }
+
+    private async validateRequest({ aggregateId, serviceName }: { aggregateId?: string, serviceName: String }) {
+        const constraint = new ValidationErrorList();
+
+        if (aggregateId) await this.validation.isUuid(aggregateId).catch(error => constraint.push({ aggregateId: error.message }));
+
+        if (serviceName != undefined) await this.validation.minLengthMatch(serviceName, 4).catch(error => constraint.push({ serviceName: error.message }))
+        await this.validation.isNotEmpty(serviceName).catch(error => constraint.push({ serviceName: error.message }))
+
+        return constraint
     }
 
 }

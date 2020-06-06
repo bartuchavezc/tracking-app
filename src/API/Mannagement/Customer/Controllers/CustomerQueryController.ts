@@ -5,8 +5,8 @@ import { webroutes } from "../../Shared/application/webroutes";
 import { NestByCriteriaCustomerQuery } from "../Sources/Query/NestByCriteriaCustomerQuery";
 import { NestAllCustomerQuery } from "../Sources/Query/NestAllCustomerQuery";
 import { NestOneCustomerQuery } from "../Sources/Query/NestOneCustomerQuery";
-import { validate, ValidateIf } from "class-validator";
 import { ValidationService } from "src/APP/Shared/Validator/Service/ValidationService";
+import { ValidationErrorList } from "src/APP/Shared/Validator/Domain/ValidationErrorList";
 
 @Controller(`${webroutes.MannagementModuleRoutePrefix}/customer`)
 export class CustomerQueryController extends WebController {
@@ -29,12 +29,8 @@ export class CustomerQueryController extends WebController {
     @Get(":id")
     async getOne(@Param("id") aggregateId: string, @Res() response) {
         this.response = response;
-        this.validation.isUuid(aggregateId)
-            .then(result => {
-                this._getOne(aggregateId)
-            }).catch(error => {
-                this.responseWithError(error)
-            })
+        await this.validateRequest(aggregateId)
+            .then(result => result.length > 0 ? this.response400(`ValidationErrors: ${JSON.stringify(result)}`) : this._getOne(aggregateId))
     }
 
     private async _getAll() {
@@ -67,6 +63,12 @@ export class CustomerQueryController extends WebController {
             .catch(error => {
                 this.responseWithError(error)
             })
+    }
+
+    private async validateRequest(agrgegateId: string) {
+        const constraint = new ValidationErrorList();
+        await this.validation.isUuid(agrgegateId).catch(error => constraint.push({ aggregateId: error.message }));
+        return constraint;
     }
 
 }

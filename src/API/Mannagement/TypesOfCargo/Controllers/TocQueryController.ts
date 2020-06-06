@@ -1,15 +1,18 @@
-import { Controller, Get, Req, Param, Res } from "@nestjs/common";
+import { Controller, Get, Req, Param, Res, Inject } from "@nestjs/common";
 import { WebController } from "../../Shared/application/nest/WebController";
 import { webroutes } from "../../Shared/application/webroutes";
 import { QueryBus } from "@nestjs/cqrs";
 import { NestTocsQuery } from "../Sources/Query/NestTocsQuery";
 import { NestSearchTocsByCriteriaQuery } from "../Sources/Query/NestSearchTocsByCreiteriaQuery";
 import { NestSearchOneTypeOfCargoQuery } from "../Sources/Query/NestSearchOneTypeOfCargoQuery";
+import { ValidationErrorList } from "src/APP/Shared/Validator/Domain/ValidationErrorList";
+import { ValidationService } from "src/APP/Shared/Validator/Service/ValidationService";
 
 @Controller(`${webroutes.MannagementModuleRoutePrefix}/type-of-cargo`)
 export class TocQueryController extends WebController {
 
     constructor(
+        @Inject("ValidationService") private readonly validation: ValidationService,
         private readonly queryBus: QueryBus
     ) {
         super()
@@ -24,9 +27,10 @@ export class TocQueryController extends WebController {
     }
 
     @Get(":id")
-    getOne(@Param("id") aggregateId: string, @Res() response){
+    async getOne(@Param("id") aggregateId: string, @Res() response) {
         this.response = response;
-        this._getOne(aggregateId);
+        await this.validateRequest(aggregateId)
+            .then(result => result.length > 0 ? this.response400(`ValidationErrors: ${JSON.stringify(result)}`) : this._getOne(aggregateId))
     }
 
     private async _searchByCreiteria(
@@ -47,6 +51,12 @@ export class TocQueryController extends WebController {
         return await this.queryBus.execute(new NestTocsQuery())
             .then(result => this.resposneWithData(result))
             .catch(err => this.responseWithError(err))
+    }
+
+    private async validateRequest(agrgegateId: string) {
+        const constraint = new ValidationErrorList();
+        await this.validation.isUuid(agrgegateId).catch(error => constraint.push({ aggregateId: error.message }));
+        return constraint;
     }
 
 }

@@ -3,8 +3,9 @@ import { ConfigModule } from '@nestjs/config'
 import { MannagementModule } from './Mannagement/Mannagement.module'
 
 @Module({
-    imports: [ 
+    imports: [
         MannagementModule,
-        ConfigModule.forRoot({isGlobal: true}) ]
+        ConfigModule.forRoot({ isGlobal: true })
+    ]
 })
-export class ServerModule {}
+export class ServerModule { }

@@ -9,10 +9,12 @@ import { ModuleRef } from "@nestjs/core";
 import { OServiceQueryHandlerProviders } from "./Sources/Query/Handler";
 import { LoggerProvider } from "src/APP/Shared/Logger";
 import { OwnerServiceRepositoryProvider } from "src/APP/Mannagement/OwnerService/Infraestructure/Persistence/OwnerServiceRepositoryProvider";
+import { ValidatorModule } from "src/API/Validator/Validator.module";
 
 @Module({
     imports: [
         CqrsModule,
+        ValidatorModule,
         DatabaseModule,
         ConfigModule
     ],

@@ -12,10 +12,8 @@ export class EmailValidatorClassValidator implements EmailValidator {
         return new Promise(async (resolve, reject) => {
             await validate(this)
                 .then(result => {
-                    if (result.length <= 0)
-                        resolve()
-                    else
-                        throw new NotEmail(email)
+                    if (result.length <= 0) resolve()
+                    else throw new NotEmail(email)
                 })
                 .catch(error => reject(error));
         })

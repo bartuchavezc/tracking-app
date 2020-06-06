@@ -1,16 +1,18 @@
-import { Controller, Get, Param, Req, Res } from "@nestjs/common";
+import { Controller, Get, Param, Req, Res, Inject } from "@nestjs/common";
 import { WebController } from "../../Shared/application/nest/WebController";
 import { QueryBus } from "@nestjs/cqrs";
 import { NestOServiceAllQuery } from "../Sources/Query/NestOServicesAllQuery";
 import { NestOServiceCriteriaQuery } from "../Sources/Query/NestOServiceCriteriaQuery";
 import { webroutes } from "../../Shared/application/webroutes";
-import { request } from "express";
 import { NestOneOServiceQuery } from "../Sources/Query/NestOneOServiceQuery";
+import { ValidationErrorList } from "src/APP/Shared/Validator/Domain/ValidationErrorList";
+import { ValidationService } from "src/APP/Shared/Validator/Service/ValidationService";
 
-@Controller(`${webroutes.MannagementModuleRoutePrefix}/services`)
+@Controller(`${webroutes.MannagementModuleRoutePrefix}/owner-service`)
 export class OServiceQueryController extends WebController {
 
     constructor(
+        @Inject("ValidationService") private readonly validation: ValidationService,
         private queryBus: QueryBus
     ) {
         super();
@@ -25,9 +27,10 @@ export class OServiceQueryController extends WebController {
     }
 
     @Get(":id")
-    getOne(@Param("id") aggregateId: string, @Res() response) {
+    async getOne(@Param("id") aggregateId: string, @Res() response) {
         this.response = response;
-        this._getOne(aggregateId)
+        await this.validateRequest(aggregateId)
+            .then(result => result.length > 0 ? this.response400(`ValidationErrors: ${JSON.stringify(result)}`) : this._getOne(aggregateId))
     }
 
     private async _getAll() {
@@ -45,7 +48,7 @@ export class OServiceQueryController extends WebController {
             .then(result => {
                 this.resposneWithData(result);
             })
-            .catch(error =>{
+            .catch(error => {
                 this.responseWithError(error);
             })
     }
@@ -60,6 +63,12 @@ export class OServiceQueryController extends WebController {
             .catch(error => {
                 this.responseWithError(error)
             })
+    }
+
+    private async validateRequest(agrgegateId: string) {
+        const constraint = new ValidationErrorList();
+        await this.validation.isUuid(agrgegateId).catch(error => constraint.push({ aggregateId: error.message }));
+        return constraint;
     }
 
 }

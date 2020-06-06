@@ -22,12 +22,12 @@ import { CustomerRepositoryProvider } from 'src/APP/Mannagement/Customer/Infraes
 import { CustomerCommandHandlerProviders } from './Sources/Command/Handlers';
 import { CustomerQueryHandlerProviders } from './Sources/Query/Handler';
 import { LoggerProvider } from 'src/APP/Shared/Logger';
-import { ValidationServiceProvider } from 'src/APP/Shared/Validator/Service/ValidationServiceProvider';
-import { ValidatorProviders } from 'src/APP/Shared/Validator/Domain/ValidatorProviders';
+import { ValidatorModule } from 'src/API/Validator/Validator.module';
 
 @Module({
     imports: [
         DatabaseModule,
+        ValidatorModule,
         CqrsModule,
         ConfigModule
     ],
@@ -39,8 +39,6 @@ import { ValidatorProviders } from 'src/APP/Shared/Validator/Domain/ValidatorPro
         ...CustomerServiceProvider,
         ...CustomerCommandHandlerProviders,
         ...CustomerQueryHandlerProviders,
-        ...ValidatorProviders,
-        ...ValidationServiceProvider,
         LoggerProvider
     ]
 })
@@ -54,7 +52,7 @@ export class CustomerModule implements OnModuleInit {
     ) { }
 
     async onModuleInit() {
-
+        
         this.command$.register([
             ...CustomerCommandHandlerProviders
         ]);

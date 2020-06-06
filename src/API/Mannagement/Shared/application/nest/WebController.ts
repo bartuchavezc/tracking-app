@@ -16,8 +16,8 @@ export class WebController {
   }
 
   protected responseWithError(err: Error | string) {
-    
-    if(err instanceof NotFoundException){
+
+    if (err instanceof NotFoundException) {
       this.response404(err);
     }
 
@@ -25,8 +25,8 @@ export class WebController {
 
   }
 
-  public response400(err: Error){
-    return this.response.status(400).send(err.message)
+  public response400(message: string) {
+    return this.response.status(400).send(message)
   }
 
   public response404(err: Error) {

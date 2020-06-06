@@ -9,10 +9,12 @@ import { TocRepositoryProvider } from "src/APP/Mannagement/TypesOfCargo/Infraest
 import { ModuleRef } from "@nestjs/core";
 import { LoggerProvider } from "src/APP/Shared/Logger";
 import { TocQueryHandlerProviders } from "./Sources/Query/Handler";
+import { ValidatorModule } from "src/API/Validator/Validator.module";
 
 @Module({
     imports: [
         CqrsModule,
+        ValidatorModule,
         DatabaseModule,
         ConfigModule
     ],

@@ -1,11 +1,12 @@
-import { Controller, Post, Body, Put, Param, Res, Inject } from "@nestjs/common";
+import { Controller, Post, Body, Put, Param, Res, Inject, Get, Req } from "@nestjs/common";
 import { WebController } from "../../Shared/application/nest/WebController";
 import { CommandBus } from "@nestjs/cqrs";
 import { webroutes } from "../../Shared/application/webroutes";
-import { CreateCustomerValidationObject } from "../Sources/Validation/CreateCustomerValidationObject";
 import { NestCustomerCreateCommand } from "../Sources/Command/NestCustomerCreateCommand";
 import { NestCustomerUpdateCommand } from "../Sources/Command/NestCustomerUpdateCommand";
 import { ValidationService } from "src/APP/Shared/Validator/Service/ValidationService";
+import { ValidationErrorList } from "src/APP/Shared/Validator/Domain/ValidationErrorList";
+import { GeocodePortAddress } from "src/APP/Mannagement/Port/Infraestructure/GeocodingAPI/GeocodePortAddress";
 
 @Controller(`${webroutes.MannagementModuleRoutePrefix}/customer`)
 export class CustomerCommandController extends WebController {
@@ -17,22 +18,24 @@ export class CustomerCommandController extends WebController {
         super();
     }
 
+    @Get('/portTest/:address')
+    port(@Req() req) {
+        console.log(req.query.address);
+        new GeocodePortAddress().__invoke(req.query.address)
+    }
+
     @Post()
-    async create(@Body() customer: CreateCustomerValidationObject, @Res() response) {
+    async create(@Body() { name, contact }: { name: String, contact: String }, @Res() response) {
         this.response = response;
-        await this._create(customer.name, customer.contact)
+        await this.validatePostRequest(name, contact)
+            .then(result => result.length > 0 ? this.response400(`ValidationErros: ${JSON.stringify(result)}`) : this._create(name, contact))
     }
 
     @Put(":id")
     async update(@Param("id") aggregateId: string, @Body() { name, contact }: { name?: String, contact?: String }, @Res() response) {
         this.response = response;
-        await this.validateRequest({ aggregateId, contact })
-            .then(result => {
-                console.log(result.length)
-                result.length > 0
-                    ? this.response400(new Error(JSON.stringify(result)))
-                    : this._update(aggregateId, { name, contact })
-            })
+        await this.validatePutRequest({ aggregateId, name, contact })
+            .then(result => result.length > 0 ? this.response400(`ValidationErros: ${JSON.stringify(result)}`) : this._update(aggregateId, { name, contact }))
     }
 
     private async _create(name: String, contact: String) {
@@ -55,11 +58,30 @@ export class CustomerCommandController extends WebController {
             })
     }
 
-    private async validateRequest({ aggregateId, name, contact }: { aggregateId?: string, name?: String, contact?: String }) {
-        const constraint = new Array();
+    private async validatePutRequest({ aggregateId, name, contact }: { aggregateId?: string, name?: String, contact?: String }) {
+        const constraint = new ValidationErrorList();
+
         if (aggregateId) await this.validation.isUuid(aggregateId).catch(error => constraint.push({ aggregateId: error.message }));
+
         if (contact) await this.validation.isEmail(contact).catch(error => constraint.push({ contact: error.message }));
-        
+
+        if (name) {
+            await this.validation.minLengthMatch(name, 4).catch(error => constraint.push({ name: error.message }))
+            await this.validation.isNotEmpty(name).catch(error => constraint.push({ name: error.message }))
+        }
+
+        return constraint
+    }
+
+    private async validatePostRequest(name: String, contact: String) {
+        const constraint = new ValidationErrorList();
+
+        await this.validation.isEmail(contact).catch(error => constraint.push({ contact: error.message }));
+
+        await this.validation.minLengthMatch(name, 4).catch(error => constraint.push({ name: error.message }))
+        await this.validation.isNotEmpty(name).catch(error => constraint.push({ name: error.message }))
+
+
         return constraint
     }
 
