@@ -7,11 +7,17 @@ import { LoggerProvider } from "src/APP/Shared/Logger";
 import { PortServiceProviders } from "src/APP/Mannagement/Port/Application/Service/PortServiceProviders";
 import { GeocodeServiceProvider } from "src/APP/Mannagement/Port/Infraestructure/GeocodingAPI/GeocodeServiceProvider";
 import { PortQueryHandlerProviders } from "./Querys/PortQueryHandlerProviders";
+import { PortRepositoryProviders } from "src/APP/Mannagement/Port/Infraestructure/Persistence/PortRepositoryProviders";
+import { DatabaseModule } from "src/Databases/Database.module";
+import { ConfigModule } from "@nestjs/config";
+import { PortSaveServiceProvider } from "src/APP/Mannagement/Port/Domain/Services/Save/PortSaveServiceProviders";
 
 @Module({
     imports: [
         CqrsModule,
-        ValidatorModule
+        ValidatorModule,
+        DatabaseModule,
+        ConfigModule
     ],
     controllers: [
         PortFinderEndpoint
@@ -19,7 +25,9 @@ import { PortQueryHandlerProviders } from "./Querys/PortQueryHandlerProviders";
     providers: [
         ...PortServiceProviders,
         ...GeocodeServiceProvider,
+        ...PortRepositoryProviders,
         ...PortQueryHandlerProviders,
+        ...PortSaveServiceProvider,
         LoggerProvider
     ]
 })

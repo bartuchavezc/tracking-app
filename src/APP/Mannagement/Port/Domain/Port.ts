@@ -1,5 +1,8 @@
+import { Uuid } from "src/APP/Shared/ValueObjects/Uuid";
+
 export class Port {
 
+    private _aggregateId: Uuid;
     readonly country: String;
     readonly state: String;
     readonly city: String;
@@ -22,13 +25,25 @@ export class Port {
 
     }
 
+    
+    public _setAaggregateId( id: Uuid) {
+        this._aggregateId = id;
+    }
+
+    public _getAggregateId() {
+        return this._aggregateId;
+    }
+    
+
     toPrimitives() {
         return {
             country: this.country,
+            state: this.state,
             city: this.city,
             address: this.address,
             location: this.location
         }
     }
+
 
 }

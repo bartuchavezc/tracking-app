@@ -29,7 +29,6 @@ export class PortFinderEndpoint extends WebController {
     private async __getPort(address: String) {
         await this.queryBus.execute(new PortsNestQuery(address))
             .then(result => {
-                console.log(result);
                 this.resposneWithData(result)
             })
             .catch(error => {
