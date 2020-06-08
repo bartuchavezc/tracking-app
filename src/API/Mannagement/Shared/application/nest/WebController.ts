@@ -11,7 +11,7 @@ export class WebController {
     return this.response.status(404).send(message);
   }
 
-  protected resposneWithData(data: Object) {
+  protected resposneWithData(data) {
     return this.response.status(200).send(JSON.stringify(data));
   }
 

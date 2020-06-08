@@ -1,30 +1,33 @@
 export class Port {
 
     readonly country: String;
+    readonly state: String;
     readonly city: String;
-    readonly location: { lat: number, long: number, address: String };
-    readonly name;
+    readonly location: { lat: number, lng: number };
+    readonly address: String
 
     constructor(
         {
-            country, city, location, name
+            country, state, city, address, location
         }: {
-            country?: String, city?: String, location: { lat: number, long: number, address: String }, name?: String
+            country?: String, state?: String, city?: String, address?: String, location: { lat: number, lng: number }
         }
     ) {
         this.location = location;
 
         if (country) this.country = country
+        if (state) this.state = state;
         if (city) this.city = city
-        if (name) this.name = name
+        if (address) this.address = address
+
     }
 
-    toPrimitives(){
+    toPrimitives() {
         return {
             country: this.country,
             city: this.city,
-            location: this.location,
-            name: this.name
+            address: this.address,
+            location: this.location
         }
     }
 

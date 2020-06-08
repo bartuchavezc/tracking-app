@@ -1,5 +1,6 @@
-import { GeocodePortAddress } from '../../../../../APP/Mannagement/Port/Infraestructure/GeocodingAPI/GeocodePortAddress';
+import { MapQuestGeocodePortAddress } from '../../../../../APP/Mannagement/Port/Infraestructure/GeocodingAPI/MapQuest/MapQuestGeocodePortAddress';
 import { config } from 'dotenv'
+import { GeocodePortAddress } from 'src/APP/Mannagement/Port/Infraestructure/GeocodingAPI/GeocodePortAddress';
 
 config();
 
@@ -16,16 +17,16 @@ describe("GeocodePortAddress", () => {
         }
     }
 
-    let geocodeService;
+    let geocodeService: GeocodePortAddress;
 
     describe("geocode", () => {
 
         beforeEach(() => {
-            geocodeService = new GeocodePortAddress()
+            geocodeService = new MapQuestGeocodePortAddress()
         })
 
         test("geocode addres from locations, location1", async () => {
-            let location = await geocodeService.__invoke(locations.location1.address)
+            let location = await geocodeService.geocode(locations.location1.address)
                 .then(results => results.find(result => { return result.location.lat == locations.location1.lat }));
 
             expect(location.location.lat).toEqual(locations.location1.lat)
@@ -33,10 +34,10 @@ describe("GeocodePortAddress", () => {
         })
 
         test("geocode addres from locations, location2", async () => {
-            await geocodeService.__invoke(locations.location2.address)
+            await geocodeService.geocode(locations.location2.address)
                 .then(result => {
-                    expect(result.location.lat).toEqual(locations.location1.lat)
-                })
+                    expect(result.length).toEqual(0)
+                }).catch(err => console.error(err))
 
         })
     })

@@ -6,7 +6,7 @@ import { NestCustomerCreateCommand } from "../Sources/Command/NestCustomerCreate
 import { NestCustomerUpdateCommand } from "../Sources/Command/NestCustomerUpdateCommand";
 import { ValidationService } from "src/APP/Shared/Validator/Service/ValidationService";
 import { ValidationErrorList } from "src/APP/Shared/Validator/Domain/ValidationErrorList";
-import { GeocodePortAddress } from "src/APP/Mannagement/Port/Infraestructure/GeocodingAPI/GeocodePortAddress";
+import { MapQuestGeocodePortAddress } from "src/APP/Mannagement/Port/Infraestructure/GeocodingAPI/MapQuest/MapQuestGeocodePortAddress";
 
 @Controller(`${webroutes.MannagementModuleRoutePrefix}/customer`)
 export class CustomerCommandController extends WebController {
@@ -16,12 +16,6 @@ export class CustomerCommandController extends WebController {
         private commandBus: CommandBus
     ) {
         super();
-    }
-
-    @Get('/portTest/:address')
-    port(@Req() req) {
-        console.log(req.query.address);
-        new GeocodePortAddress().__invoke(req.query.address)
     }
 
     @Post()

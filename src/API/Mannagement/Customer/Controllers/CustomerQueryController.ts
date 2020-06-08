@@ -34,7 +34,7 @@ export class CustomerQueryController extends WebController {
     }
 
     private async _getAll() {
-        return this.queryBus.execute(new NestAllCustomerQuery())
+        this.queryBus.execute(new NestAllCustomerQuery())
             .then(result => {
                 this.resposneWithData(result)
             })
