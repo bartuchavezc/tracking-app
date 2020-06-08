@@ -1,5 +1,8 @@
-import { dbStoreProvider } from './Eventstore/Mongoose/Provider'
+import { MongooseDB } from './MongooseDB'
 
 export const DatabaseProviders = [
-    dbStoreProvider
+    {
+        provide: 'STORE_DB_CONNECTOR',
+        useClass: MongooseDB
+    }
 ]
