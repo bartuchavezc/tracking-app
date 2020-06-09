@@ -1,1 +1,2 @@
-Bratton Tracking app
+Tracking app
+NestJS, CQRS, Mongoose
